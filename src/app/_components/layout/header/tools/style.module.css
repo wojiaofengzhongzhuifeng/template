@@ -1,0 +1,5 @@
+@reference "#tailwind.css";
+
+.tools {
+    @apply flex gap-4 justify-end items-center;
+}

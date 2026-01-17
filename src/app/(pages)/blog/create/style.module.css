@@ -1,0 +1,9 @@
+@reference "#tailwind.css";
+
+.item {
+    @apply flex flex-auto flex-col space-y-6  bg-white/90 min-w-full lg:min-w-[60%] px-5 py-3 rounded-md;
+}
+
+html[class='dark'] .item {
+    @apply bg-black/80;
+}

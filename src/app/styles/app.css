@@ -1,0 +1,33 @@
+:root {
+    --z-index-home-mouse: 30;
+    --z-index-mobile-toc: 40;
+    --z-index-disable-before: 45;
+    --z-index-header: 49;
+    --z-index-modal: 50;
+    --z-index-mobile-header-modal: 60;
+    --z-index-mobile-header: 999;
+}
+
+html {
+    @apply scroll-smooth;
+}
+
+.ant-app {
+    @apply h-[100vh] w-full p-0 m-0;
+}
+
+.lucide {
+    @apply w-4 h-4 stroke-[1px];
+}
+
+.xicon {
+    @apply w-[1em] h-[1em] inline-flex;
+
+    & svg {
+        @apply !w-full !h-full;
+
+        &:not([fill]) {
+            fill: currentcolor;
+        }
+    }
+}

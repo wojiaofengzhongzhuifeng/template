@@ -1,0 +1,151 @@
+import { z } from 'zod';
+
+import { authConfig } from '@/config/auth';
+
+import { EmailOTPType } from './constants';
+
+// 用户登录请求 schema
+export const signinRequestSchema = z.object({
+    username: authConfig.validates.username,
+    password: authConfig.validates.password,
+});
+
+// 用户信息 schema
+export const userSchema = z.object({
+    id: z.string(),
+    username: authConfig.validates.username,
+    displayUsername: z.string().nullable(),
+    email: z.string(),
+    image: z.string().nullable(),
+    emailVerified: z.boolean(),
+    createdAt: z.string().meta({ description: '用户创建时间' }),
+    updatedAt: z.string().meta({ description: '用户更新时间' }),
+});
+
+// 会话信息 schema
+export const sessionSchema = z.object({
+    id: z.string(),
+    userId: z.string(),
+    expiresAt: z.string().meta({ description: 'session过期时间' }),
+    token: z.string(),
+    ipAddress: z.string().nullable(),
+    userAgent: z.string().nullable(),
+});
+
+// 认证响应 schema
+export const authResponseSchema = z.object({
+    user: userSchema.nullable(),
+    session: sessionSchema.nullable(),
+});
+
+// 登出响应 schema
+export const authSignoutResponseSchema = z.object({
+    message: z.string(),
+});
+
+// 用户详情请求参数 schema
+export const userDetailRequestParamsSchema = z.object({
+    id: z.string().min(1, 'ID不能为空'),
+});
+
+// 发送邮箱 OTP 请求 schema
+export const sendEmailVerificationOTPRequestSchema = z.object({
+    email: z.email(),
+});
+
+// 发送忘记密码 OTP 请求 schema
+export const sendForgetPasswordOTPRequestSchema = z.object({
+    credential: authConfig.validates.username.or(z.email()),
+});
+
+// 检测用户是否存在请求的schema
+export const checkUserExistsSchema = sendForgetPasswordOTPRequestSchema;
+
+// 检查用户名唯一性请求 schema
+export const checkUsernameUniqueSchema = z.object({
+    username: authConfig.validates.username,
+});
+
+// 检查邮箱唯一性请求 schema
+export const checkEmailUniqueSchema = z.object({
+    email: z.email(),
+});
+
+// 用户注册请求 schema
+export const signupRequestSchema = z.object({
+    username: authConfig.validates.username,
+    email: z.email('请输入有效的邮箱地址'),
+    otp: z.string().length(6, '验证码为6位数字'),
+    password: authConfig.validates.password,
+    validateType: z.enum(['email', 'phone']),
+});
+
+/**
+ * 找回密码请求 schema
+ */
+export const forgetPasswordRequestSchema = z.object({
+    credential: authConfig.validates.username.or(z.email()),
+    otp: z.string().length(6, '验证码为6位数字'),
+    password: authConfig.validates.password,
+});
+
+// 用户注册响应 schema
+export const signupResponseSchema = z.object({
+    result: z.boolean(),
+    user: userSchema,
+});
+
+export const otpRateLimitRequestSchema = z.object({
+    credential: authConfig.validates.username.or(z.email()),
+    type: z.enum(Object.values(EmailOTPType) as `${EmailOTPType}`[]),
+});
+
+/**
+ * 发送验证码响应 schema
+ */
+export const sendOTPResponseSchema = z.object({
+    /**
+     * 响应消息
+     */
+    message: z.string(),
+    /**
+     * 是否可以继续发送（在发送频率限制内则为false）
+     */
+    canSend: z.boolean(),
+    /**
+     * 发送频率限制时间
+     */
+    remainingTime: z.number().optional(),
+    /**
+     * 下一次可发送的时间戳
+     */
+    nextSendTime: z.number().optional(),
+});
+
+// // 用户注册请求 schema
+// export const registerRequestSchema = z.object({
+//     username: z.string().min(2, '用户名至少2位'),
+//     email: z.email('请输入有效的邮箱地址'),
+//     password: z.string().min(6, '密码至少6位'),
+//     displayUsername: z.string().optional(),
+// });
+
+// // 用户列表 schema
+// export const userListSchema = z.array(userSchema);
+
+// // 检查用户名可用性请求 schema
+// export const checkUsernameRequestSchema = z.object({
+//     username: z.string().min(2, '用户名至少2位'),
+// });
+
+// // 检查用户名可用性响应 schema
+// export const checkUsernameResponseSchema = z.object({
+//     available: z.boolean(),
+//     message: z.string(),
+// });
+
+// // 更新用户信息请求 schema
+// export const updateUserRequestSchema = z.object({
+//     username: z.string().min(2, '用户名至少2位').optional(),
+//     displayUsername: z.string().optional(),
+// });

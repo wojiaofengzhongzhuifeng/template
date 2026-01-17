@@ -1,0 +1,30 @@
+shellEmulator: true
+
+trustPolicy: no-downgrade
+trustPolicyExclude:
+    - semver@5.7.2 || 6.3.1
+    - undici-types@6.21.0
+    - chokidar@4.0.3
+packages:
+    - .
+
+overrides:
+    eslint-config-next>eslint-import-resolver-typescript: 3.10.0
+
+onlyBuiltDependencies:
+    - '@alicloud/openapi-core'
+    - '@prisma/engines'
+    - '@tailwindcss/oxide'
+    - msgpackr-extract
+    - prisma
+    - sharp
+    - unrs-resolver
+
+peerDependencyRules:
+    allowAny:
+        - '@hono/zod-validator'
+        - zod
+        - zod-openapi
+        - prisma
+        - '@standard-schema/spec'
+        - '@prisma/client'
