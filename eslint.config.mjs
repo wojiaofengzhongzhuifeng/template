@@ -38,6 +38,7 @@ export default antfu(
             ecmaVersion: 'latest',
         },
         rules: {
+            'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0, maxBOF: 0 }],
             'no-console': 'off',
             'no-unused-vars': 'off',
             '@typescript-eslint/no-unused-vars': 'off',

@@ -1,7 +1,7 @@
 import type { MailConfig } from '@/libs/mail/types';
 
 export const mailConfig: MailConfig = {
-    defaultClient: 'aliyun',
+    defaultClient: 'smtp',
     clients: [
         {
             name: 'smtp',
@@ -16,7 +16,7 @@ export const mailConfig: MailConfig = {
                 },
             },
             default: {
-                from: 'pincman@foxmail.com',
+                from: '471412450@qq.com',
             },
         },
         {

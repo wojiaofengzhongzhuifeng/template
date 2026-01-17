@@ -24,13 +24,13 @@ export const authConfig: AuthConfig = {
             expiresIn: process.env.NODE_ENV === 'production' ? 300 : 30000,
             send: {
                 'email-verification': {
-                    client: 'aliyun',
+                    client: 'smtp',
                     templatePath: 'email-verification',
                     subject: (_type: `${EmailOTPType}`) => (appname: string, code: string) =>
                         `${appname}的用户注册邮件 | 您的验证码为${code}`,
                 },
                 'forget-password': {
-                    client: 'aliyun',
+                    client: 'smtp',
                     templatePath: 'forget-password',
                     subject: (_type: `${EmailOTPType}`) => (appname: string, code: string) =>
                         `${appname}的找回密码邮件 | 您的验证码为${code}`,
