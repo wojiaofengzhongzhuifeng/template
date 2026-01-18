@@ -1,0 +1,9 @@
+@reference "#tailwind.css";
+
+.layout {
+    @apply min-h-full w-full flex p-0 m-0 flex-col justify-between bg-stone-200/80;
+}
+
+html[class='dark'] .layout {
+    @apply bg-zinc-900/60;
+}
