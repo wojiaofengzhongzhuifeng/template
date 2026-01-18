@@ -33,6 +33,38 @@ services:
       timeout: 5s
       retries: 5
 
+  # Next.js 应用
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: blog-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # 数据库配置（使用 Docker 内部网络）
+      - DATABASE_URL=postgresql://postgres:postgres123@postgres:5432/blog
+      # Redis 配置
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - REDIS_DB=0
+      # 应用配置（部署时修改为你的域名）
+      - NEXT_PUBLIC_BASE_URL=https://yourdomain.com
+      - NEXT_PUBLIC_API_PATH=/api
+      # 邮件配置（部署时填入你的 SMTP 配置）
+      - SMTP_HOST=smtp.qq.com
+      - SMTP_PORT=465
+      - SMTP_SECURE=true
+      - SMTP_USER=
+      - SMTP_PASS=
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 volumes:
   postgres_data:
   redis_data:
