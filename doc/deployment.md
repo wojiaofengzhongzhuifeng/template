@@ -1,10 +1,10 @@
 # 服务器部署指南
 
-本文档介绍如何将应用部署到 Linux 服务器。
-
 ---
 
-## 方式一：Docker 容器化部署（推荐）
+## 一、首次部署（服务器初始化）
+
+> 以下步骤只需在新服务器上执行一次。
 
 ### 1. 安装 Docker
 
@@ -14,37 +14,81 @@ sudo systemctl enable docker
 sudo usermod -aG docker $USER
 ```
 
-### 2. 克隆代码
+重新登录使权限生效。
+
+### 2. 配置 SSH 密钥
+
+```bash
+ssh-keygen -t ed25519 -C "你的邮箱"
+cat ~/.ssh/id_ed25519.pub
+```
+
+将公钥添加到 [GitHub SSH 设置](https://github.com/settings/keys)。
+
+### 3. 创建应用目录
+
+```bash
+sudo mkdir -p /var/www
+sudo chown $USER:$USER /var/www
+```
+
+---
+
+## 二、部署新应用
+
+> 每次部署新应用（app-01、app-02...）执行以下步骤。
+
+### 1. 克隆代码
 
 ```bash
 cd /var/www
-git clone <你的仓库地址> app
-cd app
+git clone git@github.com:你的用户名/你的仓库.git app-01
+cd app-01
 ```
 
-### 3. 修改配置
-
-编辑 `docker-compose.yml`，修改以下环境变量：
-
-```yaml
-environment:
-    - NEXT_PUBLIC_BASE_URL=https://你的域名
-    - SMTP_USER=你的邮箱
-    - SMTP_PASS=你的授权码
-```
-
-### 4. 构建并启动
+### 2. 配置环境变量
 
 ```bash
-# 构建并启动所有服务
-docker compose up -d --build
+cp .env.example .env
+nano .env
+```
 
-# 初始化数据库（首次部署）
+修改以下内容：
+
+| 变量                   | 本地开发                 | Docker 部署             |
+| ---------------------- | ------------------------ | ----------------------- |
+| `POSTGRES_DB`          | `app-01`                 | `app-01`                |
+| `DATABASE_URL`         | `...@localhost:5432/...` | `...@postgres:5432/...` |
+| `REDIS_HOST`           | `localhost`              | `redis`                 |
+| `NEXT_PUBLIC_BASE_URL` | `http://localhost:3000`  | `http://服务器IP:3001`  |
+| `SMTP_USER`            | -                        | 你的邮箱                |
+| `SMTP_PASS`            | -                        | 邮箱授权码              |
+
+### 3. 修改端口（避免多应用冲突）
+
+编辑 `docker-compose.yml`，修改端口：
+
+```yaml
+ports:
+    - '3001:3000' # app-01 用 3001，app-02 用 3002
+```
+
+### 4. 启动应用
+
+```bash
+docker compose up -d --build
+```
+
+### 5. 初始化数据库（首次）
+
+```bash
 docker compose exec app npx prisma migrate deploy
 docker compose exec app npx prisma db seed
 ```
 
-### 5. 常用命令
+---
+
+## 三、常用命令
 
 | 操作     | 命令                                       |
 | -------- | ------------------------------------------ |
@@ -55,59 +99,10 @@ docker compose exec app npx prisma db seed
 
 ---
 
-## 方式二：传统部署（Node.js + PM2）
+## 四、多应用端口规划
 
-### 1. 安装依赖
-
-```bash
-# Node.js
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
-
-# pnpm
-npm install -g pnpm
-
-# PM2
-npm install -g pm2
-```
-
-### 2. 启动数据库
-
-```bash
-docker compose up -d postgres redis
-```
-
-### 3. 部署应用
-
-```bash
-pnpm install
-pnpm dbg
-pnpm dbmd
-pnpm build
-pm2 start npm --name "app" -- start
-```
-
----
-
-## Nginx 配置
-
-```nginx
-server {
-    listen 80;
-    server_name yourdomain.com;
-
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-    }
-}
-```
-
-## HTTPS
-
-```bash
-sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d yourdomain.com
-```
+| 应用   | 端口 |
+| ------ | ---- |
+| app-01 | 3001 |
+| app-02 | 3002 |
+| app-03 | 3003 |

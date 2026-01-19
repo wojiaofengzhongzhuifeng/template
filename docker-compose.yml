@@ -2,18 +2,20 @@ services:
   # PostgreSQL 数据库
   postgres:
     image: postgres:16-alpine
-    container_name: blog-postgres
+    container_name: app-01-postgres
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
-      POSTGRES_DB: blog
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -21,7 +23,7 @@ services:
   # Redis 缓存/队列
   redis:
     image: redis:7-alpine
-    container_name: blog-redis
+    container_name: app-01-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -38,27 +40,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: blog-app
+    container_name: app-01-app
     restart: unless-stopped
     ports:
-      - "3000:3000"
-    environment:
-      # 数据库配置（使用 Docker 内部网络）
-      - DATABASE_URL=postgresql://postgres:postgres123@postgres:5432/blog
-      # Redis 配置
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=
-      - REDIS_DB=0
-      # 应用配置（部署时修改为你的域名）
-      - NEXT_PUBLIC_BASE_URL=https://yourdomain.com
-      - NEXT_PUBLIC_API_PATH=/api
-      # 邮件配置（部署时填入你的 SMTP 配置）
-      - SMTP_HOST=smtp.qq.com
-      - SMTP_PORT=465
-      - SMTP_SECURE=true
-      - SMTP_USER=
-      - SMTP_PASS=
+      - "3001:3000"
+    env_file:
+      - .env
     depends_on:
       postgres:
         condition: service_healthy
