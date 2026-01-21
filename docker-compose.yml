@@ -1,7 +1,7 @@
 services:
   # PostgreSQL 数据库
   postgres:
-    image: registry.cn-hangzhou.aliyuncs.com/docker-library/postgres:16-alpine
+    image: docker.1panel.live/library/postgres:16-alpine
     container_name: app-01-postgres
     restart: unless-stopped
     env_file:
@@ -22,7 +22,7 @@ services:
 
   # Redis 缓存/队列
   redis:
-    image: registry.cn-hangzhou.aliyuncs.com/docker-library/redis:7-alpine
+    image: docker.1panel.live/library/redis:7-alpine
     container_name: app-01-redis
     restart: unless-stopped
     ports:
