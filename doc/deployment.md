@@ -79,6 +79,8 @@ ports:
 docker compose up -d --build
 ```
 
+> 如果报错 `unknown shorthand flag`，说明 Docker 版本较旧，使用 `docker-compose up -d --build`（带连字符）
+
 ### 5. 初始化数据库（首次）
 
 ```bash
