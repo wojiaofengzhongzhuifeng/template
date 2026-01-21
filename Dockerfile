@@ -1,5 +1,5 @@
 # 第一阶段：安装依赖
-FROM node:20-alpine AS deps
+FROM docker.1panel.live/library/node:20-alpine AS deps
 
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
@@ -14,7 +14,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # 第二阶段：构建应用
-FROM node:20-alpine AS builder
+FROM docker.1panel.live/library/node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -32,7 +32,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm build
 
 # 第三阶段：运行应用
-FROM node:20-alpine AS runner
+FROM docker.1panel.live/library/node:20-alpine AS runner
 
 WORKDIR /app
 
