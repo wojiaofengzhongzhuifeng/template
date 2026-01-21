@@ -29,7 +29,8 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# 生成 Prisma 客户端
+# 生成 Prisma 客户端（提供虚拟 DATABASE_URL，仅用于生成客户端，不实际连接）
+ENV DATABASE_URL="postgresql://user:pass@localhost:5432/db"
 RUN pnpm dbg
 
 # 构建应用
