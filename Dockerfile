@@ -1,6 +1,8 @@
 # 第一阶段：安装依赖
 FROM docker.1panel.live/library/node:20-alpine AS deps
 
+# 使用阿里云 Alpine 镜像源
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
