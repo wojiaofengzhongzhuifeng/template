@@ -9,6 +9,9 @@ WORKDIR /app
 # 安装 pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
+# 配置淘宝 npm 镜像
+RUN npm config set registry https://registry.npmmirror.com
+
 # 复制依赖文件
 COPY package.json pnpm-lock.yaml ./
 
