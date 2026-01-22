@@ -1,7 +1,10 @@
 import type { FC } from 'react';
 
-import { ErrorNotFound } from '../_components/errors/not-found';
-
-const NotFoundPage: FC = () => <ErrorNotFound />;
+const NotFoundPage: FC = () => (
+    <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h1>404</h1>
+        <p>Page not found</p>
+    </div>
+);
 
 export default NotFoundPage;

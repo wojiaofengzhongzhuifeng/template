@@ -4,17 +4,18 @@ import type { FC } from 'react';
 
 import $styles from '@/app/(pages)/layout.module.css';
 
-import type { ErrorBoundaryProps } from './_components/errors/boundary';
+interface ErrorBoundaryProps {
+    error: Error & { digest?: string };
+    reset: () => void;
+}
 
-import { ErrorBoundary } from './_components/errors/boundary';
-import { Header } from './_components/layout/header';
-import Theme from './_components/theme';
-const AppError: FC<ErrorBoundaryProps> = (props) => (
-    <Theme>
-        <div className={$styles.layout}>
-            <Header />
-            <ErrorBoundary {...props} />
+const AppError: FC<ErrorBoundaryProps> = ({ error, reset }) => (
+    <div className={$styles.layout}>
+        <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <h2>Something went wrong!</h2>
+            <p>{error.message}</p>
+            <button onClick={() => reset()}>Try again</button>
         </div>
-    </Theme>
+    </div>
 );
 export default AppError;
