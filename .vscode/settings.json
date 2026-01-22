@@ -1,4 +1,8 @@
 {
+    // 目录树缩进设置
+    "workbench.tree.indent": 16,
+    "explorer.compactFolders": false,
+
     // 全局包管理器
     "npm.packageManager": "pnpm",
 
