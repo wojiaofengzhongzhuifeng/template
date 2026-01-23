@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import type { FC, PropsWithChildren } from 'react';
 
-import $styles from './layout.module.css';
-
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
@@ -12,6 +10,8 @@ export const metadata: Metadata = {
 };
 
 const AppLayout: FC<PropsWithChildren> = ({ children }) => (
-    <div className={$styles.layout}>{children}</div>
+    <div className="min-h-screen w-full flex p-0 m-0 flex-col justify-between bg-stone-200/80 dark:bg-zinc-900/60">
+        {children}
+    </div>
 );
 export default AppLayout;

@@ -9,8 +9,8 @@ export const generateMetadata = async (
 });
 
 const HomePage: FC = () => (
-    <div style={{ padding: '2rem' }}>
-        <h1>Welcome to Home123321</h1>
+    <div className="flex flex-col items-center justify-center p-8">
+        <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-200">Welcome to Home</h1>
     </div>
 );
 

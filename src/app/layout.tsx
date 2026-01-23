@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import './styles/index.css';
+import '@/app/styles/index.css';
 
 import type { FC, PropsWithChildren } from 'react';
 
