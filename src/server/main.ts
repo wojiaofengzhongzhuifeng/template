@@ -10,6 +10,8 @@ import { prettyJSON } from 'hono/pretty-json';
 import { categoryPath } from './category/constants';
 import { categoryRoutes } from './category/routes';
 import { beforeServer, createHonoApp } from './common/app';
+import { countPath } from './count/constants';
+import { countRoutes } from './count/routes';
 import { postPath } from './post/constants';
 import { postRoutes } from './post/routes';
 import { tagPath } from './tag/constants';
@@ -35,6 +37,7 @@ const serverRPC = beforeServer().then(() => {
         .route(tagPath, tagRoutes)
         .route(categoryPath, categoryRoutes)
         .route(postPath, postRoutes)
+        .route(countPath, countRoutes)
         .route(authPath, authRoutes);
     app.get(
         '/data',

@@ -10,6 +10,7 @@ model User {
   displayUsername String?
   sessions        Session[]
   accounts        Account[]
+  counts          Count[]
 
   @@unique([email])
   @@unique([username])
