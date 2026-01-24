@@ -1,13 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 import { authApi } from '@/api/auth';
 
 export default function LoginPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get('callbackUrl') || '/';
+    const registered = searchParams.get('registered') === 'true';
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -22,9 +26,9 @@ export default function LoginPage() {
             await authApi.signIn(
                 { username, password },
                 {
-                    callbackURL: '/',
+                    callbackURL: callbackUrl,
                     onSuccess: () => {
-                        router.push('/');
+                        router.push(callbackUrl);
                         router.refresh();
                     },
                     onError: (err) => {
@@ -43,20 +47,23 @@ export default function LoginPage() {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-900 to-zinc-800 p-4">
             <div className="w-full max-w-md">
                 <div className="bg-zinc-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-zinc-700/50 p-8">
-                    {/* Logo / Title */}
                     <div className="text-center mb-8">
                         <h1 className="text-3xl font-bold text-white mb-2">欢迎回来</h1>
                         <p className="text-zinc-400">登录您的账户</p>
                     </div>
 
-                    {/* Error Message */}
+                    {registered && (
+                        <div className="bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-3 rounded-lg mb-6">
+                            注册成功，请登录
+                        </div>
+                    )}
+
                     {error && (
                         <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg mb-6">
                             {error}
                         </div>
                     )}
 
-                    {/* Login Form */}
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
                             <label
@@ -103,7 +110,6 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    {/* Footer Links */}
                     <div className="mt-6 text-center space-y-2">
                         <p className="text-zinc-400">
                             还没有账户？{' '}
@@ -112,6 +118,14 @@ export default function LoginPage() {
                                 className="text-blue-400 hover:text-blue-300 transition-colors"
                             >
                                 立即注册
+                            </Link>
+                        </p>
+                        <p className="text-zinc-400">
+                            <Link
+                                href="/"
+                                className="text-zinc-400 hover:text-white transition-colors"
+                            >
+                                返回首页
                             </Link>
                         </p>
                     </div>

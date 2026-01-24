@@ -21,11 +21,11 @@ export async function proxy(request: NextRequest) {
     if (protectedRoutes.some((route) => pathname.startsWith(route))) {
         return authPageProtectedHandler(request);
     }
-    if (pathname.startsWith('/auth/signin')) {
+    if (pathname.startsWith('/auth/login')) {
         return authSignInHandler(request);
     }
 
-    if (pathname.startsWith('/auth/signup') || pathname.startsWith('/auth/forget-password')) {
+    if (pathname.startsWith('/auth/register') || pathname.startsWith('/auth/forget-password')) {
         return AuthenticatedProtectedHandler(request);
     }
 
@@ -42,8 +42,7 @@ const authPageProtectedHandler = async (request: NextRequest) => {
         const isAuthenticated = !isNil(session?.user);
 
         if (!isAuthenticated) {
-            // 创建登录URL并添加回调参数
-            const signinUrl = new URL('/auth/signin', request.url);
+            const signinUrl = new URL('/auth/login', request.url);
             signinUrl.searchParams.set(
                 'callbackUrl',
                 request.nextUrl.pathname + request.nextUrl.search,
@@ -55,8 +54,7 @@ const authPageProtectedHandler = async (request: NextRequest) => {
         return NextResponse.next();
     } catch (error) {
         console.error('Auth middleware error:', error);
-        // 发生错误时也重定向到登录页面，同样添加回调参数
-        const signinUrl = new URL('/auth/signin', request.url);
+        const signinUrl = new URL('/auth/login', request.url);
         signinUrl.searchParams.set(
             'callbackUrl',
             request.nextUrl.pathname + request.nextUrl.search,

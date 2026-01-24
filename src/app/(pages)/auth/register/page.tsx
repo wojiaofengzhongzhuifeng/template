@@ -149,8 +149,7 @@ export default function RegisterPage() {
                         </button>
                     </form>
 
-                    {/* Footer Links */}
-                    <div className="mt-6 text-center">
+                    <div className="mt-6 text-center space-y-2">
                         <p className="text-zinc-400">
                             已有账户？{' '}
                             <Link
@@ -158,6 +157,14 @@ export default function RegisterPage() {
                                 className="text-blue-400 hover:text-blue-300 transition-colors"
                             >
                                 立即登录
+                            </Link>
+                        </p>
+                        <p className="text-zinc-400">
+                            <Link
+                                href="/"
+                                className="text-zinc-400 hover:text-white transition-colors"
+                            >
+                                返回首页
                             </Link>
                         </p>
                     </div>

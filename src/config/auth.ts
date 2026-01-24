@@ -4,7 +4,7 @@ import type { AuthConfig } from '@/libs/auth';
 import type { EmailOTPType } from '@/server/user/constants';
 
 export const authConfig: AuthConfig = {
-    protectedPages: ['/blog/create', '/blog/edit'],
+    protectedPages: ['/blog/create', '/blog/edit', '/count-number'],
     validates: {
         username: z
             .string()
