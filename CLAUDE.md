@@ -143,7 +143,39 @@ API 层使用 Hono 的类型安全客户端：
 - Zod 验证配合自定义错误处理器
 - 正确的 HTTP 状态码
 
-### 7. 环境变量
+### 7. HTTP 请求与状态管理
+
+**HTTP 客户端**：
+- **Axios** (`src/config/request.ts`)：配置了请求/响应拦截器的 axios 实例
+  - 自动携带 session cookie（BetterAuth 认证）
+  - GET 请求自动添加时间戳防缓存
+  - 统一错误处理（401/403/404/500 等）
+  - 预留了 token 认证扩展点
+- **Hono 类型安全客户端** (`src/libs/hono.ts`)：用于服务端组件直接调用后端
+
+**数据获取模式**：
+```typescript
+// 客户端组件：使用 axios + useRequest hook
+import { http } from '@/config/request';
+import { useRequest } from '@/hooks/use-request';
+
+const { data, loading, error, run } = useRequest(fetchFunction, {
+    manual: false,  // false = 自动执行
+    onSuccess: (data) => { /* 成功回调 */ },
+    onError: (error) => { /* 失败回调 */ },
+});
+
+// 服务端组件：使用 Hono 客户端（内部调用，无 HTTP 开销）
+import { countApi } from '@/api/count';
+const data = await countApi.publicList();
+```
+
+**Zustand Store**：
+- 使用 `src/libs/store.ts` 中的工具函数创建
+- 内置 immer、devtools、persist、subscribeWithSelector 中间件
+- 异步状态管理通常使用 `data | null` + 独立的 loading/error 状态
+
+### 8. 环境变量
 必需的环境变量：
 - `DATABASE_URL` - PostgreSQL 连接字符串
 - `NEXT_PUBLIC_BASE_URL` - 应用基础 URL
@@ -165,9 +197,11 @@ API 层使用 Hono 的类型安全客户端：
    - 运行 `pnpm dbmc` → `pnpm dbm` → `pnpm dbg`
 
 3. **前端**：
-   - 在 `src/api/myfeature.ts` 创建 API 客户端
+   - 在 `src/api/myfeature.ts` 创建 Hono API 客户端（用于服务端组件）
+   - 在 `src/app/(pages)/(myfeature)/api/` 创建 axios 请求函数（用于客户端组件）
+   - 在 `src/app/(pages)/(myfeature)/hook/` 创建数据获取 hook
+   - 在 `src/app/(pages)/(myfeature)/store/` 创建 Zustand store（如需要）
    - 在 `src/app/(pages)/myfeature/` 添加页面
-   - 如需要，使用 Zustand 进行状态管理
 
 ### 代码规范
 
@@ -185,3 +219,5 @@ API 层使用 Hono 的类型安全客户端：
 - API 路由按领域组织和版本化
 - 所有数据库操作应通过 service 层
 - Redis 与 BullMQ 用于缓存和队列管理
+- **客户端 HTTP 请求**：优先使用 `src/config/request.ts` 导出的 `http` 实例，已配置好拦截器和认证
+- **服务端组件**：优先使用 `src/api/` 中的 Hono 客户端（内部调用，无 HTTP 开销）
