@@ -1,11 +1,19 @@
 import { z } from 'zod';
 
-// 通用错误响应 schema
+// 统一响应 schema - 用于包装所有响应
+export const unifiedResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
+    z.object({
+        code: z.number().meta({ type: 'number' }),
+        message: z.string().meta({ type: 'string' }),
+        data: dataSchema.nullable().optional(),
+    });
+
+// 通用错误响应 schema（向后兼容）
 export const errorSchema = z
     .object({
-        code: z.number().optional().meta({ type: 'number' }),
+        code: z.number().meta({ type: 'number' }),
         message: z.string().meta({ type: 'string' }),
-        errors: z.any().optional().meta({ type: 'object' }),
+        data: z.null().optional(),
     })
     .strict();
 

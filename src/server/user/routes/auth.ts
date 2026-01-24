@@ -4,7 +4,12 @@ import { isNil } from 'lodash';
 import { successMessageWithResultSchema } from '@/server/common/schema';
 
 import { createHonoApp } from '../../common/app';
-import { createErrorResult, defaultValidatorErrorHandler } from '../../common/error';
+import { ErrorCode } from '../../common/constants';
+import {
+    createBusinessError,
+    createErrorResult,
+    defaultValidatorErrorHandler,
+} from '../../common/error';
 import {
     create201SuccessResponse,
     createBadRequestErrorResponse,
@@ -67,7 +72,11 @@ export const authRoutes = app
                 const { validateType, ...data } = c.req.valid('json');
                 if (validateType !== 'email') throw new Error('目前仅支持邮箱注册');
                 const res = await signUpByEmail(data);
-                if (!res.result) return c.json(createErrorResult(res.message), 400);
+                if (!res.result)
+                    return c.json(
+                        createBusinessError(ErrorCode.USER_ALREADY_EXISTS, res.message),
+                        200,
+                    );
                 return c.json(res, 201);
             } catch (error: any) {
                 return c.json(createErrorResult('注册失败', error), 500);
@@ -220,7 +229,8 @@ export const authRoutes = app
             try {
                 const { credential } = c.req.valid('json');
                 const user = await queryUserByUsernameOrEmail(credential);
-                if (isNil(user)) return c.json(createErrorResult('用户不存在'), 404);
+                if (isNil(user))
+                    return c.json(createBusinessError(ErrorCode.USER_NOT_FOUND, '用户不存在'), 200);
                 const res = await sendOTP(user.email, 'forget-password');
                 return c.json(res.result, res.code);
             } catch (error) {

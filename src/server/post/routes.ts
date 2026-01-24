@@ -3,7 +3,12 @@ import { isNil } from 'lodash';
 import z from 'zod';
 
 import { createHonoApp } from '../common/app';
-import { createErrorResult, defaultValidatorErrorHandler } from '../common/error';
+import { ErrorCode } from '../common/constants';
+import {
+    createBusinessError,
+    createErrorResult,
+    defaultValidatorErrorHandler,
+} from '../common/error';
 import {
     create201SuccessResponse,
     createNotFoundErrorResponse,
@@ -116,7 +121,7 @@ export const postRoutes = app
                 const { item } = c.req.valid('param');
                 const result = await queryPostItem(item);
                 if (!isNil(result)) return c.json(result, 200);
-                return c.json(createErrorResult('文章不存在'), 404);
+                return c.json(createBusinessError(ErrorCode.POST_NOT_FOUND, '文章不存在'), 200);
             } catch (error) {
                 return c.json(createErrorResult('查询文章失败', error), 500);
             }
@@ -140,7 +145,7 @@ export const postRoutes = app
                 const { id } = c.req.valid('param');
                 const result = await queryPostItemById(id);
                 if (!isNil(result)) return c.json(result, 200);
-                return c.json(createErrorResult('文章不存在'), 404);
+                return c.json(createBusinessError(ErrorCode.POST_NOT_FOUND, '文章不存在'), 200);
             } catch (error) {
                 return c.json(createErrorResult('查询文章失败', error), 500);
             }

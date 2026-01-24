@@ -4,6 +4,7 @@ import { isNil } from 'lodash';
 
 import { auth } from '@/libs/auth';
 
+import { ErrorCode } from '../common/constants';
 import { createErrorResult } from '../common/error';
 
 export const AuthProtectedMiddleware = createMiddleware(async (c, next) => {
@@ -14,14 +15,18 @@ export const AuthProtectedMiddleware = createMiddleware(async (c, next) => {
         c.set('user', null);
         c.set('session', null);
         throw new HTTPException(500, {
-            res: new Response(JSON.stringify(createErrorResult('服务器错误', error))),
+            res: new Response(
+                JSON.stringify(createErrorResult('服务器错误', error, ErrorCode.SERVER_ERROR)),
+            ),
         });
     }
     if (isNil(session?.user)) {
         c.set('user', null);
         c.set('session', null);
         throw new HTTPException(401, {
-            res: new Response(JSON.stringify(createErrorResult('用户未认证'))),
+            res: new Response(
+                JSON.stringify(createErrorResult('用户未认证', undefined, ErrorCode.UNAUTHORIZED)),
+            ),
         });
     }
 

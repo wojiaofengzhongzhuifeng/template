@@ -2,7 +2,12 @@ import { describeRoute, validator as zValidator } from 'hono-openapi';
 import { isNil } from 'lodash';
 
 import { createHonoApp } from '../common/app';
-import { createErrorResult, defaultValidatorErrorHandler } from '../common/error';
+import { ErrorCode } from '../common/constants';
+import {
+    createBusinessError,
+    createErrorResult,
+    defaultValidatorErrorHandler,
+} from '../common/error';
 import {
     createNotFoundErrorResponse,
     createServerErrorResponse,
@@ -36,7 +41,7 @@ export const tagRoutes = app
                 const { item } = c.req.valid('param');
                 const result = await queryTagItem(item);
                 if (!isNil(result)) return c.json(result, 200);
-                return c.json(createErrorResult('标签不存在'), 404);
+                return c.json(createBusinessError(ErrorCode.TAG_NOT_FOUND, '标签不存在'), 200);
             } catch (error) {
                 return c.json(createErrorResult('查询标签数据失败', error), 500);
             }

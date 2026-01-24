@@ -46,13 +46,11 @@ export const getBlogMetadata = async ({
         }
     }
     if (!isNil(tag)) {
-        const result = await getTagDetail(tag);
-        // const result = await tagApi.detail(tag);
-        if (result.ok) {
-            const data = await result.json();
+        try {
+            const data = await getTagDetail(tag);
             if (!isNil(data)) title = `${title}${data.text} | `;
             keywords.push(tag);
-        }
+        } catch {}
     }
 
     title = `${title}${(await parent).title?.absolute}`;
@@ -70,13 +68,17 @@ export const getBlogMetadata = async ({
 export const getPostItemMetadata = async ({ params, parent }: IPostMetadata): Promise<Metadata> => {
     const { item } = await params;
 
-    const result = await getPostDetails(item);
-    if (!result.ok) return {};
-    const post = await result.json();
+    let post;
+    try {
+        post = await getPostDetails(item);
+    } catch {
+        return {};
+    }
+    post = post as any;
     const title = `${post.title} - ${(await parent).title?.absolute}`;
     const keywords =
         isNil(post.keywords) || post.keywords.length === 0
-            ? (post.tags || []).map((t) => t.text).join(',')
+            ? (post.tags || []).map((t: any) => t.text).join(',')
             : post.keywords;
     const description =
         isNil(post.description) || post.description.length === 0 ? post.summary : post.description;

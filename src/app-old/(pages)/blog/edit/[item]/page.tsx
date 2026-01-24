@@ -21,12 +21,14 @@ export const generateMetadata = async (_: any, parent: ResolvingMetadata): Promi
 
 const PostEditPage: FC<{ params: Promise<{ item: string }> }> = async ({ params }) => {
     const { item } = await params;
-    const result = await postApi.detailById(item);
-    if (!result.ok) {
-        if (result.status !== 404) throw new Error((await result.json()).message);
-        return notFound();
+    let post;
+    try {
+        post = await postApi.detailById(item);
+    } catch (error: any) {
+        if (error.code === 2001 || error.code === 404) return notFound();
+        throw error;
     }
-    const post = (await result.json()) as any;
+    post = post as any;
     return (
         <div className="page-item">
             <div className={cn($styles.item, 'page-container')}>

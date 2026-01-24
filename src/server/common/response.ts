@@ -2,7 +2,7 @@ import type { ZodType } from 'zod';
 
 import { resolver } from 'hono-openapi';
 
-import { errorSchema } from './schema';
+import { errorSchema, unifiedResponseSchema } from './schema';
 
 /**
  * 创建OpenAPI响应信息
@@ -23,20 +23,33 @@ export const createResponse = <T extends ZodType, S extends number>(
 };
 
 /**
- * 创建OpenAPI成功响应信息
+ * 创建统一格式的OpenAPI成功响应信息
+ * @param description
+ * @param schema
+ */
+export const createUnifiedSuccessResponse = <T extends ZodType>(
+    schema: T,
+    description?: string,
+) => {
+    return createResponse(unifiedResponseSchema(schema), 200, description ?? '请求成功');
+};
+
+/**
+ * 创建OpenAPI成功响应信息（统一格式）
  * @param description
  * @param schema
  */
 export const createSuccessResponse = <T extends ZodType>(schema: T, description?: string) => {
-    return createResponse(schema, 200, description ?? '请求成功');
+    return createUnifiedSuccessResponse(schema, description);
 };
+
 /**
- * 创建OpenAPI 201 成功响应信息
+ * 创建OpenAPI 201 成功响应信息（统一格式）
  * @param description
  * @param schema
  */
 export const create201SuccessResponse = <T extends ZodType>(schema: T, description?: string) => {
-    return createResponse(schema, 201, description ?? '请求成功');
+    return createResponse(unifiedResponseSchema(schema), 201, description ?? '创建成功');
 };
 
 /**

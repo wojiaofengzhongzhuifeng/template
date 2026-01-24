@@ -21,12 +21,14 @@ import { getBreadcrumbsLinks } from '../utils';
 import $styles from './style.module.css';
 
 export const PostItemIndex: FC<{ item: string }> = async ({ item }) => {
-    const result = await postApi.detail(item);
-    if (!result.ok) {
-        if (result.status !== 404) throw new Error((await result.json()).message);
-        return notFound();
+    let post;
+    try {
+        post = await postApi.detail(item);
+    } catch (error: any) {
+        if (error.code === 2001 || error.code === 404) return notFound();
+        throw error;
     }
-    const post = await result.json();
+    post = post as any;
     const breadcrumbs: IBlogBreadcrumbItem[] = [...getBreadcrumbsLinks(post.categories, 'post')];
 
     breadcrumbs.push({
@@ -80,7 +82,7 @@ export const PostItemIndex: FC<{ item: string }> = async ({ item }) => {
                                                 <span className="mr-2">
                                                     <Tag />
                                                 </span>
-                                                {post.tags.map((tag) => (
+                                                {post.tags.map((tag: any) => (
                                                     <Link
                                                         key={tag.id}
                                                         href={`/blog?tag=${tag.text}`}

@@ -10,6 +10,7 @@ import { prettyJSON } from 'hono/pretty-json';
 import { categoryPath } from './category/constants';
 import { categoryRoutes } from './category/routes';
 import { beforeServer, createHonoApp } from './common/app';
+import { globalErrorHandler, unifiedResponseMiddleware } from './common/middleware';
 import { countPath } from './count/constants';
 import { countRoutes } from './count/routes';
 import { postPath } from './post/constants';
@@ -18,9 +19,12 @@ import { tagPath } from './tag/constants';
 import { tagRoutes } from './tag/routes';
 import { authPath } from './user/constants';
 import { authRoutes } from './user/routes/auth';
+
 const serverRPC = beforeServer().then(() => {
     const app = createHonoApp().basePath('/api');
     app.use(prettyJSON());
+    app.use(unifiedResponseMiddleware);
+    app.onError(globalErrorHandler);
     app.get('/', (c) => c.text('3R Blog API'));
     app.notFound((c) => c.json({ message: 'Not Found', ok: false }, 404));
     const routes = app

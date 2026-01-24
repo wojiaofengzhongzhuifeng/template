@@ -4,7 +4,12 @@ import { isNil } from 'lodash';
 import type { auth } from '@/libs/auth';
 
 import { createHonoApp } from '../common/app';
-import { createErrorResult, defaultValidatorErrorHandler } from '../common/error';
+import { ErrorCode } from '../common/constants';
+import {
+    createBusinessError,
+    createErrorResult,
+    defaultValidatorErrorHandler,
+} from '../common/error';
 import {
     createNotFoundErrorResponse,
     createServerErrorResponse,
@@ -110,7 +115,7 @@ export const countRoutes = app
                 const user = c.get('user');
                 const result = await queryCountItem(id, user.id);
                 if (!isNil(result)) return c.json(result, 200);
-                return c.json(createErrorResult('Count 不存在'), 404);
+                return c.json(createBusinessError(ErrorCode.COUNT_NOT_FOUND, 'Count 不存在'), 200);
             } catch (error) {
                 return c.json(createErrorResult('查询 Count 失败', error), 500);
             }
@@ -168,7 +173,10 @@ export const countRoutes = app
                 const user = c.get('user');
                 const updateResult = await updateCount(id, user.id, data);
                 if (updateResult.count === 0) {
-                    return c.json(createErrorResult('Count 不存在'), 404);
+                    return c.json(
+                        createBusinessError(ErrorCode.COUNT_NOT_FOUND, 'Count 不存在'),
+                        200,
+                    );
                 }
                 const result = await queryCountItem(id, user.id);
                 return c.json(result, 200);
@@ -201,7 +209,10 @@ export const countRoutes = app
                 const user = c.get('user');
                 const deleteResult = await deleteCount(id, user.id);
                 if (deleteResult.count === 0) {
-                    return c.json(createErrorResult('Count 不存在'), 404);
+                    return c.json(
+                        createBusinessError(ErrorCode.COUNT_NOT_FOUND, 'Count 不存在'),
+                        200,
+                    );
                 }
                 return c.json({ message: '删除成功' }, 200);
             } catch (error) {
