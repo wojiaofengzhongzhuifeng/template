@@ -13,6 +13,7 @@
         "lint": "pnpm lint:es && pnpm lint:style",
         "lint:es": "eslint . --fix",
         "lint:style": "stylelint \"**/*.css\" --fix --cache --cache-location node_modules/.cache/stylelint/",
+        "typecheck": "tsc --noEmit",
         "------------------ ui command": "----",
         "addsc": "pnpm dlx shadcn@latest add",
         "------------------ db command": "----",

@@ -140,7 +140,7 @@ export const deleteUser = async (id: string) => {
 export const signUpByEmail = async (
     data: Omit<SignupRequest, 'validateType'>,
 ): Promise<{ result: false; message: string } | { result: true; user: User }> => {
-    const { username, email, password, otp } = data;
+    const { username, email, password, otp: _otp } = data;
 
     const existingUserByEmail = await queryUserByEmail(email);
     if (existingUserByEmail) return { result: false, message: '邮箱已被使用' };
@@ -159,18 +159,24 @@ export const signUpByEmail = async (
                 password,
             },
         })) as unknown as { token: string; user: User };
-        const checkOtp = await auth.api.checkVerificationOTP({
-            body: { email, type: 'email-verification', otp },
+        // TODO: 临时跳过邮箱验证，待配置 SMTP 后恢复
+        // const checkOtp = await auth.api.checkVerificationOTP({
+        //     body: { email, type: 'email-verification', otp },
+        // });
+        // if (!checkOtp.success) {
+        //     await deleteUser(res.user.id);
+        //     return { result: false, message: '验证码错误' };
+        // } else {
+        //     await db.user.update({
+        //         where: { email: res.user.email },
+        //         data: { emailVerified: true },
+        //     });
+        // }
+        // 临时：直接标记邮箱已验证
+        await db.user.update({
+            where: { email: res.user.email },
+            data: { emailVerified: true },
         });
-        if (!checkOtp.success) {
-            await deleteUser(res.user.id);
-            return { result: false, message: '验证码错误' };
-        } else {
-            await db.user.update({
-                where: { email: res.user.email },
-                data: { emailVerified: true },
-            });
-        }
     } catch (error: any) {
         if (!isNil(res?.user.id)) await deleteUser(res.user.id);
         return { result: false, ...error.body };

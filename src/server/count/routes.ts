@@ -1,6 +1,8 @@
 import { describeRoute, validator as zValidator } from 'hono-openapi';
 import { isNil } from 'lodash';
 
+import type { auth } from '@/libs/auth';
+
 import { createHonoApp } from '../common/app';
 import { createErrorResult, defaultValidatorErrorHandler } from '../common/error';
 import {
@@ -18,13 +20,49 @@ import {
     countSchema,
     countUpdateSchema,
 } from './schema';
-import { createCount, deleteCount, queryCountItem, queryCountList, updateCount } from './service';
+import {
+    createCount,
+    deleteCount,
+    queryCountItem,
+    queryCountList,
+    queryPublicCountList,
+    updateCount,
+} from './service';
 
-const app = createHonoApp();
+type AuthSession = Awaited<ReturnType<typeof auth.api.getSession>>;
+interface Env {
+    Variables: {
+        user: NonNullable<AuthSession>['user'];
+        session: NonNullable<AuthSession>['session'];
+    };
+}
+
+const app = createHonoApp<Env>();
 
 export const countTags = ['计数操作'];
 
 export const countRoutes = app
+    // 公开的 count 列表
+    .get(
+        '/public',
+        describeRoute({
+            tags: countTags,
+            summary: '公开 Count 列表查询',
+            description: '查询所有公开的 Count（无需登录）',
+            responses: {
+                ...createSuccessResponse(countListSchema),
+                ...createServerErrorResponse('查询公开 Count 列表失败'),
+            },
+        }),
+        async (c) => {
+            try {
+                const result = await queryPublicCountList();
+                return c.json(result, 200);
+            } catch (error) {
+                return c.json(createErrorResult('查询公开 Count 列表失败', error), 500);
+            }
+        },
+    )
     // 获取用户的 count 列表
     .get(
         '/',
@@ -96,9 +134,9 @@ export const countRoutes = app
         AuthProtectedMiddleware,
         async (c) => {
             try {
-                const { number } = c.req.valid('json');
+                const { number, isPublic } = c.req.valid('json');
                 const user = c.get('user');
-                const result = await createCount(user.id, number);
+                const result = await createCount(user.id, number, isPublic);
                 return c.json(result, 201);
             } catch (error) {
                 return c.json(createErrorResult('创建 Count 失败', error), 500);
@@ -126,9 +164,9 @@ export const countRoutes = app
         async (c) => {
             try {
                 const { id } = c.req.valid('param');
-                const { number } = c.req.valid('json');
+                const data = c.req.valid('json');
                 const user = c.get('user');
-                const updateResult = await updateCount(id, user.id, number);
+                const updateResult = await updateCount(id, user.id, data);
                 if (updateResult.count === 0) {
                     return c.json(createErrorResult('Count 不存在'), 404);
                 }

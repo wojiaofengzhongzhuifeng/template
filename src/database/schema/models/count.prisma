@@ -1,6 +1,7 @@
 model Count {
     id        String   @id @default(uuid())
     number    Int      @default(0)
+    isPublic  Boolean  @default(false) @map("is_public")
     userId    String
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     createdAt DateTime @default(now())

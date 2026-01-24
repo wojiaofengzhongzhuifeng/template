@@ -13,6 +13,16 @@ export const queryCountList = async (userId: string) => {
 };
 
 /**
+ * 查询公开的 Count 列表
+ */
+export const queryPublicCountList = async () => {
+    return await db.count.findMany({
+        where: { isPublic: true },
+        orderBy: { createdAt: 'desc' },
+    });
+};
+
+/**
  * 查询单个 Count
  */
 export const queryCountItem = async (id: string, userId: string) => {
@@ -24,19 +34,27 @@ export const queryCountItem = async (id: string, userId: string) => {
 /**
  * 创建 Count
  */
-export const createCount = async (userId: string, number: number = 0) => {
+export const createCount = async (
+    userId: string,
+    number: number = 0,
+    isPublic: boolean = false,
+) => {
     return await db.count.create({
-        data: { userId, number },
+        data: { userId, number, isPublic },
     });
 };
 
 /**
  * 更新 Count
  */
-export const updateCount = async (id: string, userId: string, number: number) => {
+export const updateCount = async (
+    id: string,
+    userId: string,
+    data: { number?: number; isPublic?: boolean },
+) => {
     return await db.count.updateMany({
         where: { id, userId },
-        data: { number },
+        data,
     });
 };
 

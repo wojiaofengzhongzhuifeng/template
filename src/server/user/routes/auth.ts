@@ -196,6 +196,7 @@ export const authRoutes = app
                 const res = await sendOTP(email, 'email-verification');
                 return c.json(res.result, res.code);
             } catch (error) {
+                console.error('Email verification error:', error);
                 return c.json(createErrorResult('发送邮箱验证码错误', error), 500);
             }
         },

@@ -13,6 +13,7 @@ export const countIdParamsSchema = z.object({
 export const countCreateSchema = z
     .object({
         number: z.number().int().default(0).meta({ description: '计数值' }),
+        isPublic: z.boolean().default(false).meta({ description: '是否公开' }),
     })
     .meta({ $id: 'CountCreate', description: '创建 Count 请求数据' });
 
@@ -21,7 +22,8 @@ export const countCreateSchema = z
  */
 export const countUpdateSchema = z
     .object({
-        number: z.number().int().meta({ description: '计数值' }),
+        number: z.number().int().optional().meta({ description: '计数值' }),
+        isPublic: z.boolean().optional().meta({ description: '是否公开' }),
     })
     .meta({ $id: 'CountUpdate', description: '更新 Count 请求数据' });
 
@@ -32,6 +34,7 @@ export const countSchema = z
     .object({
         id: z.string(),
         number: z.number().int(),
+        isPublic: z.boolean(),
         userId: z.string(),
         createdAt: z.date(),
         updatedAt: z.date(),
