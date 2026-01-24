@@ -7,6 +7,7 @@ export const countClient = buildClient<CountApiType>(countPath);
 
 export const countApi = {
     list: async () => fetchApi(countClient, async (c) => c.index.$get()),
+    publicList: async () => fetchApi(countClient, async (c) => c.public.$get()),
     detail: async (id: string) =>
         fetchApi(countClient, async (c) => c[':id'].$get({ param: { id } })),
     create: async (data: CountCreate) =>

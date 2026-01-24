@@ -59,7 +59,10 @@ export default function LoginPage() {
                     {/* Login Form */}
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-zinc-300 mb-2">
+                            <label
+                                htmlFor="username"
+                                className="block text-sm font-medium text-zinc-300 mb-2"
+                            >
                                 用户名 / 邮箱
                             </label>
                             <input
@@ -74,7 +77,10 @@ export default function LoginPage() {
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-zinc-300 mb-2">
+                            <label
+                                htmlFor="password"
+                                className="block text-sm font-medium text-zinc-300 mb-2"
+                            >
                                 密码
                             </label>
                             <input
@@ -101,7 +107,10 @@ export default function LoginPage() {
                     <div className="mt-6 text-center space-y-2">
                         <p className="text-zinc-400">
                             还没有账户？{' '}
-                            <Link href="/auth/register" className="text-blue-400 hover:text-blue-300 transition-colors">
+                            <Link
+                                href="/auth/register"
+                                className="text-blue-400 hover:text-blue-300 transition-colors"
+                            >
                                 立即注册
                             </Link>
                         </p>

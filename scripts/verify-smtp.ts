@@ -1,7 +1,6 @@
-
-import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import path from 'path';
+import path from 'node:path';
+import nodemailer from 'nodemailer';
 
 // Load env from root
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
@@ -23,8 +22,8 @@ console.log({
     secure: config.secure,
     auth: {
         user: config.auth.user,
-        pass: config.auth.pass ? '******' : 'undefined'
-    }
+        pass: config.auth.pass ? '******' : 'undefined',
+    },
 });
 
 const transporter = nodemailer.createTransport(config);
