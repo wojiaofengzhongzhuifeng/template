@@ -1,10 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { authApi } from '@/api/auth';
 import {
     createCount,
     deleteCount,
@@ -12,17 +9,14 @@ import {
     useGetCountList,
 } from '@/app/(pages)/count-number/api/count';
 import { useCountStore } from '@/app/(pages)/count-number/store/count';
-import { useAuth } from '@/hooks/use-auth';
+import Header from '@/components/header';
 
 export default function CountNumberPage() {
-    const router = useRouter();
-    const { user } = useAuth();
     const { refresh } = useGetCountList();
     const { counts } = useCountStore();
     const [error, setError] = useState<string | null>(null);
     const [newNumber, setNewNumber] = useState(0);
     const [isPublic, setIsPublic] = useState(false);
-    const [logoutLoading, setLogoutLoading] = useState(false);
 
     const handleCreate = async () => {
         try {
@@ -71,47 +65,9 @@ export default function CountNumberPage() {
         }
     };
 
-    const handleLogout = async () => {
-        setLogoutLoading(true);
-        try {
-            await authApi.signOut({
-                onSuccess: () => {
-                    router.push('/');
-                    router.refresh();
-                },
-            });
-        } catch {
-            setError('登出失败');
-        } finally {
-            setLogoutLoading(false);
-        }
-    };
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800">
-            <nav className="bg-zinc-800/50 backdrop-blur-xl border-b border-zinc-700/50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <h1 className="text-xl font-bold text-white">我的计数器</h1>
-                        <div className="flex items-center gap-4">
-                            <span className="text-zinc-300">欢迎, {user?.username}</span>
-                            <Link
-                                href="/"
-                                className="text-zinc-300 hover:text-white transition-colors"
-                            >
-                                首页
-                            </Link>
-                            <button
-                                onClick={handleLogout}
-                                disabled={logoutLoading}
-                                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {logoutLoading ? '登出中...' : '登出'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+            <Header />
 
             <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {error && (

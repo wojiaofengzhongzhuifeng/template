@@ -11,15 +11,16 @@ import type {
     User,
 } from '@/server/user/type';
 
-import { appConfig } from '@/config/app';
 import { buildClient, fetchApi } from '@/libs/hono';
-// 使用fetch-api构建Auth API客户端
+
 export const authFetchClient = buildClient<AuthApiType>('/auth');
-// Better Auth 官方客户端（支持用户名登录）
+
 export const authClient = createAuthClient({
-    baseURL: appConfig.baseUrl,
     basePath: '/api/auth',
     plugins: [usernameClient()],
+    fetchOptions: {
+        credentials: 'include',
+    },
 });
 
 export const authApi = {
@@ -37,8 +38,13 @@ export const authApi = {
             onError?: (error: any) => void;
         },
     ) => {
+        console.log('[authApi.signIn] Starting login...', {
+            username: data.username,
+            callbackURL: options?.callbackURL,
+        });
+
         try {
-            return await authClient.signIn.username(
+            const result = await authClient.signIn.username(
                 {
                     username: data.username,
                     password: data.password,
@@ -46,11 +52,20 @@ export const authApi = {
                     rememberMe: options?.rememberMe ?? true,
                 },
                 {
-                    onSuccess: options?.onSuccess,
-                    onError: options?.onError,
+                    onSuccess: (ctx?: any) => {
+                        console.log('[authApi.signIn] onSuccess called:', ctx);
+                        options?.onSuccess?.(ctx);
+                    },
+                    onError: (err) => {
+                        console.error('[authApi.signIn] onError called:', err);
+                        options?.onError?.(err);
+                    },
                 },
             );
+            console.log('[authApi.signIn] Login completed:', result);
+            return result;
         } catch (error) {
+            console.error('[authApi.signIn] Login failed:', error);
             if (options?.onError) {
                 options.onError(error);
             }
@@ -62,11 +77,14 @@ export const authApi = {
      * 用户登出 - 使用 Better Auth 官方客户端
      */
     signOut: async (options?: { onSuccess?: () => void }) => {
-        return await authClient.signOut({
+        console.log('[authApi.signOut] Starting logout...');
+        const result = await authClient.signOut({
             fetchOptions: {
                 onSuccess: options?.onSuccess,
             },
         });
+        console.log('[authApi.signOut] Logout completed:', result);
+        return result;
     },
 
     /**
@@ -87,8 +105,12 @@ export const authApi = {
      * 通过邮件验证码注册
      * @param data
      */
-    signUp: async (data: SignupRequest) =>
-        fetchApi(authFetchClient, async (c) => c['sign-up'].$post({ json: data })),
+    signUp: async (data: SignupRequest) => {
+        console.log('[authApi.signUp] Starting signup...', { username: data.username });
+        const result = fetchApi(authFetchClient, async (c) => c['sign-up'].$post({ json: data }));
+        console.log('[authApi.signUp] Signup completed');
+        return result;
+    },
 
     /**
      * 重置密码
@@ -137,15 +159,4 @@ export const authApi = {
      */
     checkEmailUnique: async (email: string) =>
         fetchApi(authFetchClient, async (c) => c.check['email-unique'].$post({ json: { email } })),
-
-    /**
-     * 检查用户名是否可用
-     */
-    // isUsernameAvailable: async (username: string) => authClient.isUsernameAvailable({ username }),
-
-    /**
-     * 更新用户信息
-     */
-    // updateUser: async (data: { username?: string; displayUsername?: string }) =>
-    //     authClient.updateUser(data),
 };

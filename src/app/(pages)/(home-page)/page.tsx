@@ -1,55 +1,16 @@
 'use client';
 
-import Link from 'next/link';
-
 import { useGetPublicCountNumberList } from '@/app/(pages)/(home-page)/api/get-public-count-number';
 import { useHomeStore } from '@/app/(pages)/(home-page)/store/home';
-import { useAuth } from '@/hooks/use-auth';
+import Header from '@/components/header';
 
 export default function HomePage() {
     useGetPublicCountNumberList();
     const { countList } = useHomeStore();
-    const { user, loading } = useAuth();
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-zinc-900 to-zinc-800">
-            <nav className="bg-zinc-800/50 backdrop-blur-xl border-b border-zinc-700/50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <h1 className="text-xl font-bold text-white">计数器应用</h1>
-                        <div className="flex items-center gap-4">
-                            {loading ? (
-                                <span className="text-zinc-400">加载中...</span>
-                            ) : user ? (
-                                <>
-                                    <span className="text-zinc-300">欢迎, {user.username}</span>
-                                    <Link
-                                        href="/count-number"
-                                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                                    >
-                                        我的计数器
-                                    </Link>
-                                </>
-                            ) : (
-                                <>
-                                    <Link
-                                        href="/auth/login"
-                                        className="text-zinc-300 hover:text-white transition-colors"
-                                    >
-                                        登录
-                                    </Link>
-                                    <Link
-                                        href="/auth/register"
-                                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                                    >
-                                        注册
-                                    </Link>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </nav>
+            <Header />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="bg-zinc-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-zinc-700/50 p-8">

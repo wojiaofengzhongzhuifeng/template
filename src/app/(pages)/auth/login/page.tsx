@@ -19,26 +19,33 @@ export default function LoginPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log('Login form submitted', { username, callbackUrl });
         setError(null);
         setLoading(true);
 
         try {
-            await authApi.signIn(
+            const result = await authApi.signIn(
                 { username, password },
                 {
                     callbackURL: callbackUrl,
-                    onSuccess: () => {
+                    onSuccess: (ctx?: any) => {
+                        console.log('Login success:', ctx);
+                        setError(null);
+                        setLoading(false);
                         router.push(callbackUrl);
                         router.refresh();
                     },
                     onError: (err) => {
+                        console.error('Login error:', err);
                         setError(err?.message || '登录失败，请检查用户名和密码');
+                        setLoading(false);
                     },
                 },
             );
-        } catch {
+            console.log('Login result:', result);
+        } catch (error) {
+            console.error('Login catch error:', error);
             setError('登录失败，请稍后重试');
-        } finally {
             setLoading(false);
         }
     };

@@ -22,9 +22,9 @@ export default function RegisterPage() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // 提交注册
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log('Register form submitted', { username: formData.username });
         setError(null);
 
         if (formData.password !== formData.confirmPassword) {
@@ -40,23 +40,21 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            // TODO: 临时生成邮箱，待配置 SMTP 后恢复邮箱输入
-            const tempEmail = `${formData.username}@temp.local`;
-            const response = await authApi.signUp({
+            const tempEmail = `${formData.username}.${Date.now()}@temp.local`;
+            console.log('Registering with email:', tempEmail);
+            await authApi.signUp({
                 username: formData.username,
                 email: tempEmail,
                 password: formData.password,
-                otp: '000000', // 临时验证码
+                otp: '000000',
                 validateType: 'email',
             });
 
-            if (response.ok) {
-                router.push('/auth/login?registered=true');
-            } else {
-                setError('注册失败，请检查输入信息');
-            }
-        } catch {
-            setError('注册失败，请稍后重试');
+            console.log('Register success');
+            router.push('/auth/login?registered=true');
+        } catch (error: any) {
+            console.error('Register error:', error);
+            setError(error?.message || '注册失败，请检查输入信息');
         } finally {
             setLoading(false);
         }
