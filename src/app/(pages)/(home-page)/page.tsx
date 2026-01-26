@@ -16,12 +16,6 @@ export default function HomePage() {
                 <div className="bg-zinc-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-zinc-700/50 p-8">
                     <h2 className="text-2xl font-bold text-white mb-6">公开计数器列表</h2>
 
-                    {countList === undefined && (
-                        <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded mb-4">
-                            请求失败，请刷新重试
-                        </div>
-                    )}
-
                     {countList === null && (
                         <div className="text-center text-zinc-400">加载中...</div>
                     )}

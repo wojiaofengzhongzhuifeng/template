@@ -4,6 +4,8 @@ import '@/app/styles/index.css';
 
 import type { FC, PropsWithChildren } from 'react';
 
+import { Toaster } from '@/components/toast';
+
 export const metadata: Metadata = {
     title: 'nextapp',
     description: '3r教室Next.js全栈开发课程',
@@ -11,7 +13,10 @@ export const metadata: Metadata = {
 
 const RootLayout: FC<PropsWithChildren> = ({ children }) => (
     <html lang="en" suppressHydrationWarning>
-        <body>{children}</body>
+        <body>
+            {children}
+            <Toaster />
+        </body>
     </html>
 );
 
