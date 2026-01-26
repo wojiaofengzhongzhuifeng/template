@@ -1,9 +1,0 @@
-@reference "#tailwind.css";
-
-.logo {
-    @apply flex flex-none items-center max-w-28;
-}
-
-.logo > a {
-    @apply block w-auto h-auto;
-}

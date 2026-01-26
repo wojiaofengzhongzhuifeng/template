@@ -1,9 +1,0 @@
-@reference "#tailwind.css";
-
-.container {
-    @apply w-full flex gap-8 relative;
-
-    & > .article {
-        @apply flex-1 min-w-0 overflow-hidden;
-    }
-}

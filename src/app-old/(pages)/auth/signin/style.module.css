@@ -1,5 +1,0 @@
-@reference "#tailwind.css";
-
-.item {
-    @apply flex flex-col space-y-8 !w-full lg:!w-auto mx-auto px-5 py-9 rounded-md shadow-md mt-28;
-}
