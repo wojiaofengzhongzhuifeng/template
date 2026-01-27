@@ -54,7 +54,7 @@ interface StoryScene {
 }
 
 // Mock 测试数据
-const MOCK_RESPONSE = {
+const _MOCK_RESPONSE = {
     success: true,
     scenes: [
         {

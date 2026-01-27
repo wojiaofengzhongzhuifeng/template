@@ -12,10 +12,6 @@ import {
 import { useCountStore } from '@/app/(pages)/count-number/store/count';
 import Header from '@/components/header';
 
-function test(a, b) {
-    return a + b;
-}
-
 export default function CountNumberPage() {
     const { refresh } = useGetCountList();
     const { counts } = useCountStore();
