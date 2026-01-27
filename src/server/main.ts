@@ -15,6 +15,10 @@ import { beforeServer, createHonoApp } from './common/app';
 import { globalErrorHandler, unifiedResponseMiddleware } from './common/middleware';
 import { countPath } from './count/constants';
 import { countRoutes } from './count/routes';
+import { createPromptPath } from './create-prompt/constants';
+import { createPromptRoutes } from './create-prompt/routes';
+import { generateCentralIdeaPath } from './generate-central-idea/constants';
+import { generateCentralIdeaRoutes } from './generate-central-idea/routes';
 import { postPath } from './post/constants';
 import { postRoutes } from './post/routes';
 import { tagPath } from './tag/constants';
@@ -45,7 +49,9 @@ const serverRPC = beforeServer().then(() => {
         .route(postPath, postRoutes)
         .route(countPath, countRoutes)
         .route(authPath, authRoutes)
-        .route(beautifyStoryPath, beautifyStoryRoutes);
+        .route(beautifyStoryPath, beautifyStoryRoutes)
+        .route(generateCentralIdeaPath, generateCentralIdeaRoutes)
+        .route(createPromptPath, createPromptRoutes);
     app.get(
         '/data',
         openAPIRouteHandler(app, {

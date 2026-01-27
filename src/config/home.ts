@@ -1,4 +1,4 @@
-import type { HomePageConfig } from '@/app-old/_components/home/type';
+import type { HomePageConfig } from '@/types/home';
 
 export const homeConfig: HomePageConfig = {
     welcome: {
