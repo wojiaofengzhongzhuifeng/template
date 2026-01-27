@@ -28,7 +28,7 @@ console.log({
 
 const transporter = nodemailer.createTransport(config);
 
-transporter.verify(function (error, success) {
+transporter.verify(function (error, _success) {
     if (error) {
         console.error('Connection failed!');
         console.error(error);

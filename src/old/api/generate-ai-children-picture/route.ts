@@ -31,7 +31,7 @@ function getMockResponse(
     let height = 1024;
     if (size && size.includes('x')) {
         const [w, h] = size.split('x').map(Number);
-        if (!isNaN(w) && !isNaN(h)) {
+        if (!Number.isNaN(w) && !Number.isNaN(h)) {
             width = w;
             height = h;
         }
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
         let height = 1024;
         if (size && size.includes('x')) {
             const [w, h] = size.split('x').map(Number);
-            if (!isNaN(w) && !isNaN(h)) {
+            if (!Number.isNaN(w) && !Number.isNaN(h)) {
                 width = w;
                 height = h;
             }

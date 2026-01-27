@@ -25,7 +25,14 @@
         "dbmd": "cross-env NODE_ENV=production prisma migrate deploy",
         "dbs": "prisma db seed",
         "dbo": "prisma studio",
-        "dball": "pnpm run dbm && pnpm run dbg && pnpm run dbs"
+        "dball": "pnpm run dbm && pnpm run dbg && pnpm run dbs",
+        "prepare": "husky",
+        "lint-staged": {
+            "*.{ts,tsx,js,jsx}": [
+                "eslint --fix",
+                "prettier --write"
+            ]
+        }
     },
     "dependencies": {
         "@alicloud/credentials": "^2.4.4",
@@ -137,6 +144,8 @@
         "eslint-plugin-react-hooks": "^7.0.1",
         "eslint-plugin-react-refresh": "^0.4.26",
         "eslint-plugin-unused-imports": "^4.3.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.2.7",
         "postcss-mixins": "^12.1.2",
         "postcss-nesting": "^13.0.2",
         "prettier": "^3.7.4",
