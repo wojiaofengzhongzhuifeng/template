@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import { useBeautifyStory } from '@/app/(pages)/count-number/api/beautify-story';
 import {
     createCount,
     deleteCount,
@@ -17,6 +18,54 @@ export default function CountNumberPage() {
     const [error, setError] = useState<string | null>(null);
     const [newNumber, setNewNumber] = useState(0);
     const [isPublic, setIsPublic] = useState(false);
+
+    const [storyOverview, setStoryOverview] = useState('');
+    const [childAge, setChildAge] = useState<'infant' | 'preschool' | 'early_elementary'>(
+        'preschool',
+    );
+    const [selectedThemes, setSelectedThemes] = useState<string[]>(['emotional_education']);
+    const [beautifiedStory, setBeautifiedStory] = useState<string | null>(null);
+    const { run: beautifyRun, loading: beautifying } = useBeautifyStory();
+
+    const themeOptions = [
+        { value: 'emotional_education', label: '情感教育' },
+        { value: 'cognitive_learning', label: '认知学习' },
+        { value: 'social_behavior', label: '社会行为' },
+        { value: 'natural_science', label: '自然科学' },
+        { value: 'fantasy_adventure', label: '奇幻冒险' },
+    ];
+
+    const ageOptions = [
+        { value: 'infant', label: '0-2岁婴幼儿' },
+        { value: 'preschool', label: '3-6岁学龄前儿童' },
+        { value: 'early_elementary', label: '6-8岁小学低年级' },
+    ];
+
+    const handleThemeToggle = (value: string) => {
+        setSelectedThemes((prev) =>
+            prev.includes(value) ? prev.filter((t) => t !== value) : [...prev, value],
+        );
+    };
+
+    const handleBeautify = async () => {
+        if (!storyOverview.trim()) {
+            setError('故事概述不能为空');
+            return;
+        }
+
+        try {
+            setError(null);
+            const result = await beautifyRun({
+                storyOverview,
+                childAge,
+                themes: selectedThemes,
+            });
+            setBeautifiedStory(result.beautifiedStory);
+        } catch (err: any) {
+            setError(err.message || '美化失败');
+            setBeautifiedStory(null);
+        }
+    };
 
     const handleCreate = async () => {
         try {
@@ -78,6 +127,81 @@ export default function CountNumberPage() {
                         </button>
                     </div>
                 )}
+
+                <div className="bg-zinc-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-zinc-700/50 p-6 mb-6">
+                    <h2 className="text-lg font-semibold mb-4 text-white">AI 美化故事</h2>
+
+                    <div className="space-y-4">
+                        <div>
+                            <label
+                                htmlFor="storyOverview"
+                                className="block text-zinc-300 mb-2 text-sm"
+                            >
+                                故事概述
+                            </label>
+                            <textarea
+                                id="storyOverview"
+                                value={storyOverview}
+                                onChange={(e) => setStoryOverview(e.target.value)}
+                                className="w-full bg-zinc-700/50 border border-zinc-600 rounded-lg px-3 py-2 text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                                placeholder="请输入故事概述..."
+                                rows={3}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-zinc-300 mb-2 text-sm">年龄段</label>
+                            <select
+                                value={childAge}
+                                onChange={(e) => setChildAge(e.target.value as any)}
+                                className="w-full bg-zinc-700/50 border border-zinc-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            >
+                                {ageOptions.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <div className="block text-zinc-300 mb-2 text-sm">主题（可多选）</div>
+                            <div className="flex flex-wrap gap-2">
+                                {themeOptions.map((option) => (
+                                    <button
+                                        key={option.value}
+                                        type="button"
+                                        onClick={() => handleThemeToggle(option.value)}
+                                        className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                                            selectedThemes.includes(option.value)
+                                                ? 'bg-blue-600 text-white'
+                                                : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+                                        }`}
+                                    >
+                                        {option.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={handleBeautify}
+                            disabled={beautifying || !storyOverview.trim()}
+                            className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-zinc-600 disabled:cursor-not-allowed"
+                        >
+                            {beautifying ? '美化中...' : '开始美化'}
+                        </button>
+
+                        {beautifiedStory && (
+                            <div className="mt-4 p-4 bg-zinc-700/30 border border-zinc-600 rounded-lg">
+                                <h3 className="text-sm font-semibold text-zinc-300 mb-2">
+                                    美化结果
+                                </h3>
+                                <p className="text-white leading-relaxed">{beautifiedStory}</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
 
                 <div className="bg-zinc-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-zinc-700/50 p-6 mb-6">
                     <h2 className="text-lg font-semibold mb-4 text-white">创建新计数器</h2>

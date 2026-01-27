@@ -7,6 +7,8 @@ import { openAPIRouteHandler } from 'hono-openapi';
 import { cors } from 'hono/cors';
 import { prettyJSON } from 'hono/pretty-json';
 
+import { beautifyStoryPath } from './beautify-story/constants';
+import { beautifyStoryRoutes } from './beautify-story/routes';
 import { categoryPath } from './category/constants';
 import { categoryRoutes } from './category/routes';
 import { beforeServer, createHonoApp } from './common/app';
@@ -42,7 +44,8 @@ const serverRPC = beforeServer().then(() => {
         .route(categoryPath, categoryRoutes)
         .route(postPath, postRoutes)
         .route(countPath, countRoutes)
-        .route(authPath, authRoutes);
+        .route(authPath, authRoutes)
+        .route(beautifyStoryPath, beautifyStoryRoutes);
     app.get(
         '/data',
         openAPIRouteHandler(app, {
