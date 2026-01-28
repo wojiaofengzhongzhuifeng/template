@@ -17,6 +17,8 @@ import { countPath } from './count/constants';
 import { countRoutes } from './count/routes';
 import { createPromptPath } from './create-prompt/constants';
 import { createPromptRoutes } from './create-prompt/routes';
+import { generateAiChildrenPicturePath } from './generate-ai-children-picture/constants';
+import { generateAiChildrenPictureRoutes } from './generate-ai-children-picture/routes';
 import { generateCentralIdeaPath } from './generate-central-idea/constants';
 import { generateCentralIdeaRoutes } from './generate-central-idea/routes';
 import { postPath } from './post/constants';
@@ -51,7 +53,8 @@ const serverRPC = beforeServer().then(() => {
         .route(authPath, authRoutes)
         .route(beautifyStoryPath, beautifyStoryRoutes)
         .route(generateCentralIdeaPath, generateCentralIdeaRoutes)
-        .route(createPromptPath, createPromptRoutes);
+        .route(createPromptPath, createPromptRoutes)
+        .route(generateAiChildrenPicturePath, generateAiChildrenPictureRoutes);
     app.get(
         '/data',
         openAPIRouteHandler(app, {
