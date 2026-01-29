@@ -3,9 +3,15 @@ import z from 'zod';
 export const generateAiChildrenPictureSchema = z
     .object({
         prompt: z.string().min(1).meta({ description: '图片描述' }),
-        negativePrompt: z.string().optional().meta({ description: '负面提示词' }),
-        model: z.string().default('cogview-4').meta({ description: 'AI 模型名称' }),
-        size: z.string().default('1024x1024').meta({ description: '图片尺寸，格式：宽x高' }),
+        model: z
+            .string()
+            .default('glm-image')
+            .meta({ description: 'AI 模型名称（glm-image, cogview-4, cogview-3-flash）' }),
+        size: z.string().default('1280x1280').meta({ description: '图片尺寸，格式：宽x高' }),
+        quality: z
+            .enum(['hd', 'standard'])
+            .default('hd')
+            .meta({ description: '图片质量（hd=高清，standard=标准）' }),
         sceneIndex: z.number().int().optional().meta({ description: '场景索引（用于 Mock 模式）' }),
     })
     .meta({ $id: 'GenerateAiChildrenPicture', description: '生成 AI 儿童绘本图片请求' });
@@ -23,11 +29,9 @@ export const generateAiChildrenPictureResponseSchema = z
         metadata: z
             .object({
                 prompt: z.string(),
-                negativePrompt: z.string(),
                 width: z.number(),
                 height: z.number(),
-                steps: z.number(),
-                seed: z.number(),
+                quality: z.string(),
             })
             .meta({ description: '元数据' }),
     })

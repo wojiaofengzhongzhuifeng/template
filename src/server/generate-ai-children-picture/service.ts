@@ -1,21 +1,21 @@
 import type { GenerateAiChildrenPicture } from './type';
 
 export const generateAiChildrenPicture = async (data: GenerateAiChildrenPicture) => {
-    const { prompt, negativePrompt, model, size, sceneIndex } = data;
+    const { prompt, model, size, quality, sceneIndex } = data;
 
     const useMockData = process.env.USE_MOCK_GENERATE_PIC?.toLowerCase().trim() === 'true';
 
     if (useMockData) {
-        return generateMockImage(prompt, negativePrompt, size, sceneIndex);
+        return generateMockImage(prompt, size, quality, sceneIndex);
     }
 
-    return generateRealImage(prompt, negativePrompt, model, size);
+    return generateRealImage(prompt, model, size, quality);
 };
 
 const generateMockImage = async (
     prompt: string,
-    negativePrompt: string | undefined,
     size: string | undefined,
+    quality: string | undefined,
     sceneIndex?: number,
 ) => {
     const MOCK_IMAGES = [
@@ -52,11 +52,9 @@ const generateMockImage = async (
         generationTime: Math.floor(Math.random() * 3000) + 2000,
         metadata: {
             prompt,
-            negativePrompt: negativePrompt || '',
             width,
             height,
-            steps: 50,
-            seed: Math.floor(Math.random() * 1000000),
+            quality: quality || 'hd',
         },
     };
 };
@@ -83,14 +81,11 @@ const generateRealImage = async (
     }
 
     const requestBody = {
-        model: model || 'cogview-4',
+        model: model || 'glm-image',
         prompt,
-        negative_prompt: negativePrompt || '',
         size: `${width}x${height}`,
-        steps: 50,
-        seed: Math.floor(Math.random() * 1000000),
-        quality: 'standard',
-        style: 'natural',
+        quality: model === 'glm-image' ? 'hd' : 'standard',
+        watermark_enabled: true,
     };
 
     const startTime = Date.now();
@@ -175,11 +170,9 @@ const generateRealImage = async (
         generationTime,
         metadata: {
             prompt,
-            negativePrompt,
             width,
             height,
-            steps: 50,
-            seed: requestBody.seed,
+            quality: requestBody.quality,
         },
     };
 };
