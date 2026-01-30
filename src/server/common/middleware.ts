@@ -29,6 +29,10 @@ export const unifiedResponseMiddleware = async (c: Context, next: Next) => {
         return;
     }
 
+    if (isObject(originalResponse) && 'openapi' in originalResponse) {
+        return;
+    }
+
     const status = c.res.status;
 
     if (status >= 400) {

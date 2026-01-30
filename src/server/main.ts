@@ -35,7 +35,8 @@ const serverRPC = beforeServer().then(() => {
     app.onError(globalErrorHandler);
     app.get('/', (c) => c.text('3R Blog API'));
     app.notFound((c) => c.json({ message: 'Not Found', ok: false }, 404));
-    const routes = app
+
+    const apiRoutes = createHonoApp()
         .use(
             '*',
             cors({
@@ -55,9 +56,12 @@ const serverRPC = beforeServer().then(() => {
         .route(generateCentralIdeaPath, generateCentralIdeaRoutes)
         .route(createPromptPath, createPromptRoutes)
         .route(generateAiChildrenPicturePath, generateAiChildrenPictureRoutes);
+
+    app.route('', apiRoutes);
+
     app.get(
         '/data',
-        openAPIRouteHandler(app, {
+        openAPIRouteHandler(apiRoutes, {
             documentation: {
                 info: {
                     version: 'v1',
@@ -77,7 +81,8 @@ const serverRPC = beforeServer().then(() => {
             url: '/api/data',
         }),
     );
-    return { app, routes };
+
+    return { app, routes: apiRoutes };
 });
 type RPCType = Awaited<typeof serverRPC>['routes'];
 export { type RPCType, serverRPC };

@@ -1,1 +1,1 @@
-export const generateAiChildrenPicturePath = '/generate-ai-children-picture';
+export const generateAiChildrenPicturePath = '/ai/generate-ai-children-picture';

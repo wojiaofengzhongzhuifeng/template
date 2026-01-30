@@ -81,7 +81,7 @@ const generateRealImage = async (
     }
 
     const requestBody = {
-        model: model || 'glm-image',
+        model: model || 'cogview-3-flash',
         prompt,
         size: `${width}x${height}`,
         quality: model === 'glm-image' ? 'hd' : 'standard',

@@ -36,8 +36,8 @@ export const countSchema = z
         number: z.number().int(),
         isPublic: z.boolean(),
         userId: z.string(),
-        createdAt: z.date(),
-        updatedAt: z.date(),
+        createdAt: z.string().meta({ description: '创建时间' }),
+        updatedAt: z.string().meta({ description: '更新时间' }),
     })
     .meta({ $id: 'Count', description: 'Count 详情数据' });
 

@@ -1,1 +1,1 @@
-export const createPromptPath = '/create-prompt';
+export const createPromptPath = '/ai/create-prompt';

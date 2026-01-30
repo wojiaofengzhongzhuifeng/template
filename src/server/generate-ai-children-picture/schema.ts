@@ -5,7 +5,7 @@ export const generateAiChildrenPictureSchema = z
         prompt: z.string().min(1).meta({ description: '图片描述' }),
         model: z
             .enum(['glm-image', 'cogview-4-250304', 'cogview-4', 'cogview-3-flash'])
-            .default('glm-image')
+            .default('cogview-3-flash')
             .meta({ description: 'AI 模型名称' }),
         size: z.string().default('1280x1280').meta({ description: '图片尺寸，格式：宽x高' }),
         quality: z
