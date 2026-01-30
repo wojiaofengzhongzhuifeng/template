@@ -9,7 +9,7 @@ export const generateAiChildrenPicture = async (data: GenerateAiChildrenPicture)
         return generateMockImage(prompt, size, quality, sceneIndex);
     }
 
-    return generateRealImage(prompt, model, size, quality);
+    return generateRealImage(prompt, size, quality, model);
 };
 
 const generateMockImage = async (
@@ -61,9 +61,9 @@ const generateMockImage = async (
 
 const generateRealImage = async (
     prompt: string,
-    negativePrompt: string | undefined,
-    model: string,
     size: string,
+    quality: string | undefined,
+    model: string,
 ) => {
     const zhipuApiKey = process.env.ZHIPU_API_KEY;
     if (!zhipuApiKey || zhipuApiKey.includes('placeholder')) {
@@ -112,13 +112,13 @@ const generateRealImage = async (
         const errorMessage = errorData.error?.message || response.statusText;
 
         if (response.status === 401) {
-            throw new Error('API Key 无效或已过期');
+            throw new Error(`API Key 无效或已过期: ${errorMessage}`);
         } else if (response.status === 429) {
-            throw new Error('请求过于频繁，请稍后重试');
+            throw new Error(`请求过于频繁，请稍后重试: ${errorMessage}`);
         } else if (response.status === 402) {
-            throw new Error('账户余额不足，请充值');
+            throw new Error(`账户余额不足，请充值: ${errorMessage}`);
         } else {
-            throw new Error(`图片生成失败: ${errorMessage}`);
+            throw new Error(`图片生成失败: ${JSON.stringify(errorData)}`);
         }
     }
 
