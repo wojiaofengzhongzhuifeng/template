@@ -63,11 +63,29 @@ const serverRPC = beforeServer().then(() => {
         '/data',
         openAPIRouteHandler(apiRoutes, {
             documentation: {
+                openapi: '3.1.0',
                 info: {
                     version: 'v1',
                     title: '3RCD API',
                     description: '3R TS全栈课程的后端API',
                 },
+                servers: [
+                    {
+                        url: '/api',
+                        description: 'API 基础路径',
+                    },
+                ],
+                components: {
+                    securitySchemes: {
+                        sessionCookie: {
+                            type: 'apiKey',
+                            in: 'cookie',
+                            name: 'better-auth.session_token',
+                            description: '登录后自动携带的 session cookie',
+                        },
+                    },
+                },
+                security: [],
             },
         }),
     );
@@ -79,6 +97,8 @@ const serverRPC = beforeServer().then(() => {
         Scalar({
             theme: 'saturn',
             url: '/api/data',
+            layout: 'modern',
+            darkMode: true,
         }),
     );
 
