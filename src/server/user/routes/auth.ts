@@ -22,18 +22,23 @@ import {
 import { AuthProtectedMiddleware } from '../middlwares';
 import { getOTPSendStatus } from '../otp';
 import {
+    authResponseExample,
     authResponseSchema,
     authSignoutResponseSchema,
     checkEmailUniqueSchema,
+    checkUniqueExample,
+    checkUserExistsExample,
     checkUserExistsSchema,
     checkUsernameUniqueSchema,
     forgetPasswordRequestSchema,
     otpRateLimitRequestSchema,
     sendEmailVerificationOTPRequestSchema,
     sendForgetPasswordOTPRequestSchema,
+    sendOTPResponseExample,
     sendOTPResponseSchema,
     signinRequestSchema,
     signupRequestSchema,
+    signupResponseExample,
     signupResponseSchema,
 } from '../schema';
 import {
@@ -61,7 +66,7 @@ export const authRoutes = app
             description: '创建新用户账户',
             responses: {
                 ...createValidatorErrorResponse(),
-                ...create201SuccessResponse(signupResponseSchema),
+                ...create201SuccessResponse(signupResponseSchema, undefined, signupResponseExample),
                 ...createBadRequestErrorResponse('请求错误'),
                 ...createServerErrorResponse('服务器错误'),
             },
@@ -90,7 +95,7 @@ export const authRoutes = app
             summary: '用户名登录',
             description: '支持使用用户名进行登录',
             responses: {
-                ...createSuccessResponse(authResponseSchema),
+                ...createSuccessResponse(authResponseSchema, undefined, authResponseExample),
                 ...createValidatorErrorResponse(),
                 ...createUnauthorizedErrorResponse('认证失败'),
                 ...createServerErrorResponse('登录失败'),
@@ -118,7 +123,10 @@ export const authRoutes = app
             description: '通过邮件找回用户密码',
             responses: {
                 ...createValidatorErrorResponse(),
-                ...createSuccessResponse(successMessageWithResultSchema),
+                ...createSuccessResponse(successMessageWithResultSchema, undefined, {
+                    result: true,
+                    message: '密码重置成功',
+                }),
                 ...createBadRequestErrorResponse('请求错误'),
                 ...createServerErrorResponse('服务器错误'),
             },
@@ -141,7 +149,9 @@ export const authRoutes = app
             summary: '用户登出',
             description: '注销当前用户会话',
             responses: {
-                ...createSuccessResponse(authSignoutResponseSchema),
+                ...createSuccessResponse(authSignoutResponseSchema, undefined, {
+                    message: '登出成功',
+                }),
                 ...createUnauthorizedErrorResponse(),
                 ...createServerErrorResponse('登出失败'),
             },
@@ -164,7 +174,7 @@ export const authRoutes = app
             summary: '获取会话信息',
             description: '获取当前用户的会话信息',
             responses: {
-                ...createSuccessResponse(authResponseSchema),
+                ...createSuccessResponse(authResponseSchema, undefined, authResponseExample),
                 ...createUnauthorizedErrorResponse(),
                 ...createServerErrorResponse('获取会话失败'),
             },
@@ -192,7 +202,7 @@ export const authRoutes = app
             summary: '发送用户注册的邮箱验证码',
             description: '发送用户注册的邮箱验证码',
             responses: {
-                ...createSuccessResponse(sendOTPResponseSchema),
+                ...createSuccessResponse(sendOTPResponseSchema, undefined, sendOTPResponseExample),
                 ...createValidatorErrorResponse(),
                 ...createBadRequestErrorResponse('发送频率限制', 429),
                 ...createServerErrorResponse('发送邮箱验证码失败'),
@@ -217,7 +227,7 @@ export const authRoutes = app
             summary: '发送找回密码的邮箱验证码',
             description: '发送找回密码的邮箱验证码',
             responses: {
-                ...createSuccessResponse(sendOTPResponseSchema),
+                ...createSuccessResponse(sendOTPResponseSchema, undefined, sendOTPResponseExample),
                 ...createValidatorErrorResponse(),
                 ...createNotFoundErrorResponse('用户不存在'),
                 ...createBadRequestErrorResponse('发送频率限制', 429),
@@ -245,7 +255,7 @@ export const authRoutes = app
             summary: '获取 OTP 发送状态',
             description: '获取邮箱验证码的发送状态，用于页面刷新后恢复倒计时',
             responses: {
-                ...createSuccessResponse(sendOTPResponseSchema),
+                ...createSuccessResponse(sendOTPResponseSchema, undefined, sendOTPResponseExample),
                 ...createValidatorErrorResponse(),
                 ...createServerErrorResponse('获取状态失败'),
             },
@@ -270,7 +280,11 @@ export const authRoutes = app
             description: '通过用户名或邮箱检查对应的用户是否存在',
             responses: {
                 ...createValidatorErrorResponse(),
-                ...createSuccessResponse(successMessageWithResultSchema),
+                ...createSuccessResponse(
+                    successMessageWithResultSchema,
+                    undefined,
+                    checkUserExistsExample,
+                ),
                 ...createServerErrorResponse('服务器错误'),
             },
         }),
@@ -294,7 +308,11 @@ export const authRoutes = app
             description: '检测用户名的唯一性',
             responses: {
                 ...createValidatorErrorResponse(),
-                ...createSuccessResponse(successMessageWithResultSchema),
+                ...createSuccessResponse(
+                    successMessageWithResultSchema,
+                    undefined,
+                    checkUniqueExample,
+                ),
                 ...createServerErrorResponse('服务器错误'),
             },
         }),
@@ -319,7 +337,11 @@ export const authRoutes = app
             description: '检测用户邮箱的唯一性',
             responses: {
                 ...createValidatorErrorResponse(),
-                ...createSuccessResponse(successMessageWithResultSchema),
+                ...createSuccessResponse(
+                    successMessageWithResultSchema,
+                    undefined,
+                    checkUniqueExample,
+                ),
                 ...createServerErrorResponse('服务器错误'),
             },
         }),

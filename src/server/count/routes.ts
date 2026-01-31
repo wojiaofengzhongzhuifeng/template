@@ -20,7 +20,9 @@ import {
 import { AuthProtectedMiddleware } from '../user/middlwares';
 import {
     countCreateSchema,
+    countExample,
     countIdParamsSchema,
+    countListExample,
     countListSchema,
     countSchema,
     countUpdateSchema,
@@ -55,7 +57,7 @@ export const countRoutes = app
             summary: '公开 Count 列表查询',
             description: '查询所有公开的 Count（无需登录）',
             responses: {
-                ...createSuccessResponse(countListSchema),
+                ...createSuccessResponse(countListSchema, undefined, countListExample),
                 ...createServerErrorResponse('查询公开 Count 列表失败'),
             },
         }),
@@ -76,7 +78,7 @@ export const countRoutes = app
             summary: 'Count 列表查询',
             description: '查询当前用户的所有 Count',
             responses: {
-                ...createSuccessResponse(countListSchema),
+                ...createSuccessResponse(countListSchema, undefined, countListExample),
                 ...createUnauthorizedErrorResponse(),
                 ...createServerErrorResponse('查询 Count 列表失败'),
             },
@@ -100,7 +102,7 @@ export const countRoutes = app
             summary: 'Count 详情查询',
             description: '查询单个 Count 的详细信息',
             responses: {
-                ...createSuccessResponse(countSchema),
+                ...createSuccessResponse(countSchema, undefined, countExample),
                 ...createValidatorErrorResponse(),
                 ...createUnauthorizedErrorResponse(),
                 ...createNotFoundErrorResponse('Count 不存在'),
@@ -129,7 +131,7 @@ export const countRoutes = app
             summary: '创建 Count',
             description: '创建一个新的 Count',
             responses: {
-                ...createSuccessResponse(countSchema),
+                ...createSuccessResponse(countSchema, undefined, countExample),
                 ...createValidatorErrorResponse(),
                 ...createUnauthorizedErrorResponse(),
                 ...createServerErrorResponse('创建 Count 失败'),
@@ -156,7 +158,7 @@ export const countRoutes = app
             summary: '更新 Count',
             description: '更新 Count 的数值',
             responses: {
-                ...createSuccessResponse(countSchema),
+                ...createSuccessResponse(countSchema, undefined, countExample),
                 ...createValidatorErrorResponse(),
                 ...createUnauthorizedErrorResponse(),
                 ...createNotFoundErrorResponse('Count 不存在'),

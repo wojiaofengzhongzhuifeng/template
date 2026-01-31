@@ -23,8 +23,11 @@ import {
     postDetailByIdRequestParamsSchema,
     postDetailBySlugRequestParamsSchema,
     postDetailRequestParamsSchema,
+    postExample,
+    postPageNumbersExample,
     postPageNumbersRequestQuerySchema,
     postPageNumbersSchema,
+    postPaginateExample,
     postPaginateRequestQuerySchema,
     postPaginateSchema,
     postSchema,
@@ -51,7 +54,7 @@ export const postRoutes = app
             summary: '文章分页查询',
             description: '文章分页查询',
             responses: {
-                ...createSuccessResponse(postPaginateSchema),
+                ...createSuccessResponse(postPaginateSchema, undefined, postPaginateExample),
                 ...createValidatorErrorResponse(),
                 ...createServerErrorResponse('查询文章分页数据失败'),
             },
@@ -80,7 +83,7 @@ export const postRoutes = app
             summary: '文章页面总数查询',
             description: '文章页面总数查询',
             responses: {
-                ...createSuccessResponse(postPageNumbersSchema),
+                ...createSuccessResponse(postPageNumbersSchema, undefined, postPageNumbersExample),
                 ...createValidatorErrorResponse(),
                 ...createServerErrorResponse('查询页面总数失败'),
             },
@@ -109,7 +112,7 @@ export const postRoutes = app
             summary: '文章详情查询',
             description: '可以传入文章id或者slug查询文章详情',
             responses: {
-                ...createSuccessResponse(postSchema),
+                ...createSuccessResponse(postSchema, undefined, postExample),
                 ...createValidatorErrorResponse(),
                 ...createNotFoundErrorResponse('文章不存在'),
                 ...createServerErrorResponse('查询文章失败'),
@@ -134,7 +137,7 @@ export const postRoutes = app
             summary: '通过ID查询文章详情',
             description: '通过ID查询文章详情',
             responses: {
-                ...createSuccessResponse(postPaginateSchema),
+                ...createSuccessResponse(postSchema, undefined, postExample),
                 ...createValidatorErrorResponse(),
                 ...createServerErrorResponse('查询文章分页数据失败'),
             },
@@ -158,7 +161,7 @@ export const postRoutes = app
             summary: '通过slug查询文章详情',
             description: '通过slug查询文章详情',
             responses: {
-                ...createSuccessResponse(postPaginateSchema),
+                ...createSuccessResponse(postSchema, undefined, postExample),
                 ...createValidatorErrorResponse(),
                 ...createServerErrorResponse('查询文章分页数据失败'),
             },
@@ -181,7 +184,7 @@ export const postRoutes = app
             summary: '创建文章',
             description: '创建文章',
             responses: {
-                ...create201SuccessResponse(postSchema.or(z.null())),
+                ...create201SuccessResponse(postSchema.or(z.null()), undefined, postExample),
                 ...createValidatorErrorResponse(),
                 ...createUnauthorizedErrorResponse(),
                 ...createServerErrorResponse('创建文章失败'),
@@ -212,7 +215,7 @@ export const postRoutes = app
             summary: '更新文章',
             description: '更新文章',
             responses: {
-                ...createSuccessResponse(postSchema.or(z.null())),
+                ...createSuccessResponse(postSchema.or(z.null()), undefined, postExample),
                 ...createValidatorErrorResponse(),
                 ...createUnauthorizedErrorResponse(),
                 ...createServerErrorResponse('更新文章失败'),
@@ -245,7 +248,7 @@ export const postRoutes = app
             summary: '删除文章',
             description: '删除文章',
             responses: {
-                ...createSuccessResponse(postSchema.or(z.null())),
+                ...createSuccessResponse(postSchema.or(z.null()), undefined, null),
                 ...createValidatorErrorResponse(),
                 ...createUnauthorizedErrorResponse(),
                 ...createServerErrorResponse('删除文章失败'),

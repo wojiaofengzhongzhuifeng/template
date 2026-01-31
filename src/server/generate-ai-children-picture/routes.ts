@@ -11,7 +11,11 @@ import {
     createValidatorErrorResponse,
 } from '../common/response';
 import { AuthProtectedMiddleware } from '../user/middlwares';
-import { generateAiChildrenPictureResponseSchema, generateAiChildrenPictureSchema } from './schema';
+import {
+    generateAiChildrenPictureResponseExample,
+    generateAiChildrenPictureResponseSchema,
+    generateAiChildrenPictureSchema,
+} from './schema';
 import { generateAiChildrenPicture } from './service';
 
 type AuthSession = Awaited<ReturnType<typeof auth.api.getSession>>;
@@ -34,7 +38,11 @@ export const generateAiChildrenPictureRoutes = app.post(
         summary: '生成 AI 儿童绘本图片',
         description: '使用智谱 CogView-4 模型生成儿童绘本风格的图片',
         responses: {
-            ...createSuccessResponse(generateAiChildrenPictureResponseSchema),
+            ...createSuccessResponse(
+                generateAiChildrenPictureResponseSchema,
+                undefined,
+                generateAiChildrenPictureResponseExample,
+            ),
             ...createUnauthorizedErrorResponse(),
             ...createValidatorErrorResponse(),
             ...createServerErrorResponse('生成图片失败'),

@@ -1,5 +1,30 @@
 import z from 'zod';
 
+export const generateAiChildrenPictureRequestExample = {
+    prompt: '一只可爱的小兔子在森林里寻找胡萝卜，卡通风格，色彩鲜艳，适合儿童绘本',
+    model: 'cogview-3-flash',
+    size: '1280x1280',
+    quality: 'hd',
+    sceneIndex: 0,
+};
+
+export const generateAiChildrenPictureResponseExample = {
+    success: true,
+    imageUrl: 'https://example.com/images/rabbit-carrot-1280x1280.jpg',
+    originalUrl: 'https://api.zhipuai.com/v4/images/abc123',
+    storagePath: '/uploads/2024/01/rabbit-carrot.jpg',
+    model: 'cogview-3-flash',
+    generationTime: 3500,
+    warning: null,
+    error: null,
+    metadata: {
+        prompt: '一只可爱的小兔子在森林里寻找胡萝卜，卡通风格，色彩鲜艳，适合儿童绘本',
+        width: 1280,
+        height: 1280,
+        quality: 'hd',
+    },
+};
+
 export const generateAiChildrenPictureSchema = z
     .object({
         prompt: z.string().min(1).meta({ description: '图片描述' }),

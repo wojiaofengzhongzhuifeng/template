@@ -1,5 +1,51 @@
 import z from 'zod';
 
+export const categoryExample = {
+    id: 'cat-001',
+    name: '技术',
+    slug: 'tech',
+    path: 'tech',
+    depth: 1,
+    numchild: 2,
+    children: [
+        {
+            id: 'cat-002',
+            name: '前端',
+            slug: 'frontend',
+            path: 'tech/frontend',
+            depth: 2,
+            numchild: 0,
+        },
+        {
+            id: 'cat-003',
+            name: '后端',
+            slug: 'backend',
+            path: 'tech/backend',
+            depth: 2,
+            numchild: 0,
+        },
+    ],
+};
+
+export const categoryListExample = [
+    {
+        id: 'cat-001',
+        name: '技术',
+        slug: 'tech',
+        path: 'tech',
+        depth: 1,
+        numchild: 2,
+    },
+    {
+        id: 'cat-004',
+        name: '生活',
+        slug: 'life',
+        path: 'life',
+        depth: 1,
+        numchild: 1,
+    },
+];
+
 /**
  * 分类列表查询请求数据结构
  */

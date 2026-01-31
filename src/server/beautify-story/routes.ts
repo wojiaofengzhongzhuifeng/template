@@ -10,7 +10,11 @@ import {
     createValidatorErrorResponse,
 } from '../common/response';
 import { AuthProtectedMiddleware } from '../user/middlwares';
-import { beautifyStoryRequestSchema, beautifyStoryResponseSchema } from './schema';
+import {
+    beautifyStoryRequestSchema,
+    beautifyStoryResponseExample,
+    beautifyStoryResponseSchema,
+} from './schema';
 import { beautifyStory } from './service';
 
 type AuthSession = Awaited<ReturnType<typeof auth.api.getSession>>;
@@ -33,7 +37,11 @@ export const beautifyStoryRoutes = app.post(
         summary: '美化故事概述',
         description: '优化故事概述，使其更加生动有趣',
         responses: {
-            ...createSuccessResponse(beautifyStoryResponseSchema),
+            ...createSuccessResponse(
+                beautifyStoryResponseSchema,
+                undefined,
+                beautifyStoryResponseExample,
+            ),
             ...createUnauthorizedErrorResponse(),
             ...createValidatorErrorResponse(),
             ...createServerErrorResponse('美化失败'),

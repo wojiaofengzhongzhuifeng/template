@@ -14,7 +14,13 @@ import {
     createSuccessResponse,
     createValidatorErrorResponse,
 } from '../common/response';
-import { tagItemRequestParamsSchema, tagListSchema, tagSchema } from './schema';
+import {
+    tagExample,
+    tagItemRequestParamsSchema,
+    tagListExample,
+    tagListSchema,
+    tagSchema,
+} from './schema';
 import { queryTagItem, queryTagList } from './service';
 
 const app = createHonoApp();
@@ -29,7 +35,7 @@ export const tagRoutes = app
             summary: '标签详情查询',
             description: '查询单个标签的详细信息',
             responses: {
-                ...createSuccessResponse(tagSchema),
+                ...createSuccessResponse(tagSchema, undefined, tagExample),
                 ...createValidatorErrorResponse(),
                 ...createNotFoundErrorResponse('标签不存在'),
                 ...createServerErrorResponse('查询标签数据数据失败'),
@@ -54,7 +60,7 @@ export const tagRoutes = app
             summary: '标签列表查询',
             description: '标签列表查询',
             responses: {
-                ...createSuccessResponse(tagListSchema),
+                ...createSuccessResponse(tagListSchema, undefined, tagListExample),
                 ...createValidatorErrorResponse(),
                 ...createServerErrorResponse('查询标签列表数据失败'),
             },

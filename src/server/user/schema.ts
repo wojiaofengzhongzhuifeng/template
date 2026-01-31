@@ -4,6 +4,51 @@ import { authConfig } from '@/config/auth';
 
 import { EmailOTPType } from './constants';
 
+export const userExample = {
+    id: 'user-001',
+    username: 'testuser',
+    displayUsername: '测试用户',
+    email: 'test@example.com',
+    image: null,
+    emailVerified: true,
+    createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+};
+
+export const sessionExample = {
+    id: 'session-001',
+    userId: 'user-001',
+    expiresAt: '2024-01-02T00:00:00.000Z',
+    token: 'session-token-example',
+    ipAddress: '127.0.0.1',
+    userAgent: 'Mozilla/5.0',
+};
+
+export const authResponseExample = {
+    user: userExample,
+    session: sessionExample,
+};
+
+export const signupResponseExample = {
+    result: true,
+    user: userExample,
+};
+
+export const sendOTPResponseExample = {
+    message: '验证码已发送',
+    canSend: true,
+    remainingTime: 60,
+    nextSendTime: 1704110400000,
+};
+
+export const checkUserExistsExample = {
+    exists: true,
+};
+
+export const checkUniqueExample = {
+    isUnique: true,
+};
+
 // 用户登录请求 schema
 export const signinRequestSchema = z.object({
     username: authConfig.validates.username,

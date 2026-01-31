@@ -1,5 +1,25 @@
 import z from 'zod';
 
+export const tagExample = {
+    id: 'tag-001',
+    text: 'React',
+};
+
+export const tagListExample = [
+    {
+        id: 'tag-001',
+        text: 'React',
+    },
+    {
+        id: 'tag-002',
+        text: 'Vue',
+    },
+    {
+        id: 'tag-003',
+        text: 'TypeScript',
+    },
+];
+
 /**
  * 文章详情查询请求数据结构
  */

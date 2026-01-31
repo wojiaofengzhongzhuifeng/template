@@ -1,5 +1,33 @@
 import z from 'zod';
 
+export const countExample = {
+    id: '550e8400-e29b-41d4-a716-446655440000',
+    number: 10,
+    isPublic: true,
+    userId: 'user-001',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+};
+
+export const countListExample = [
+    {
+        id: '550e8400-e29b-41d4-a716-446655440000',
+        number: 10,
+        isPublic: true,
+        userId: 'user-001',
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
+    },
+    {
+        id: '660e8400-e29b-41d4-a716-446655440001',
+        number: 25,
+        isPublic: false,
+        userId: 'user-001',
+        createdAt: '2024-01-02T00:00:00.000Z',
+        updatedAt: '2024-01-02T00:00:00.000Z',
+    },
+];
+
 /**
  * Count ID 请求参数
  */

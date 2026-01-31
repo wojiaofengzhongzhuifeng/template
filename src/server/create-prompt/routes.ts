@@ -10,7 +10,11 @@ import {
     createValidatorErrorResponse,
 } from '../common/response';
 import { AuthProtectedMiddleware } from '../user/middlwares';
-import { createPromptRequestSchema, createPromptResponseSchema } from './schema';
+import {
+    createPromptRequestSchema,
+    createPromptResponseExample,
+    createPromptResponseSchema,
+} from './schema';
 import { createPrompt } from './service';
 
 type AuthSession = Awaited<ReturnType<typeof auth.api.getSession>>;
@@ -33,7 +37,11 @@ export const createPromptRoutes = app.post(
         summary: '创建绘本',
         description: '根据表单数据创建绘本',
         responses: {
-            ...createSuccessResponse(createPromptResponseSchema),
+            ...createSuccessResponse(
+                createPromptResponseSchema,
+                undefined,
+                createPromptResponseExample,
+            ),
             ...createUnauthorizedErrorResponse(),
             ...createValidatorErrorResponse(),
             ...createServerErrorResponse('创建失败'),

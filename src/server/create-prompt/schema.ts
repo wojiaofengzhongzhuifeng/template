@@ -1,5 +1,31 @@
 import z from 'zod';
 
+export const createPromptRequestExample = {
+    child_age: 'preschool',
+    illustration_style: 'cartoon',
+    themes: ['emotional_education', 'social_behavior'],
+    story_overview: '一只小兔子在森林里寻找胡萝卜，帮助朋友的故事',
+    central_idea: '通过小兔子的冒险旅程，展现友谊互助和勇敢面对困难的美好品质',
+};
+
+export const createPromptResponseExample = {
+    success: true,
+    data: {
+        id: 'prompt-001',
+        prompts: [
+            {
+                sceneIndex: 1,
+                description: '阳光明媚的早晨，小兔子跳跳从家里出来，准备去森林探险',
+            },
+            {
+                sceneIndex: 2,
+                description: '跳跳在森林里遇到了小松鼠松松，他们成为了好朋友',
+            },
+        ],
+    },
+    message: '创建成功',
+};
+
 export const createPromptRequestSchema = z
     .object({
         child_age: z.enum(['infant', 'preschool', 'early_elementary']).nullable(),

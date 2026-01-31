@@ -9,6 +9,8 @@ import {
 } from '../common/response';
 import {
     categoryBreadcrumbRequestParamsSchema,
+    categoryExample,
+    categoryListExample,
     categoryListRequestParamsSchema,
     categoryListSchema,
     categoryTreeSchema,
@@ -27,7 +29,7 @@ export const categoryRoutes = app
             summary: '分类列表查询',
             description: '查询出分类树,并进行扁平化处理后的一维列表',
             responses: {
-                ...createSuccessResponse(categoryListSchema),
+                ...createSuccessResponse(categoryListSchema, undefined, categoryListExample),
                 ...createValidatorErrorResponse(),
                 ...createServerErrorResponse('查询分类列表数据失败'),
             },
@@ -51,7 +53,7 @@ export const categoryRoutes = app
             summary: '分类树查询',
             description: '树形嵌套结构的分类数据查询',
             responses: {
-                ...createSuccessResponse(categoryTreeSchema),
+                ...createSuccessResponse(categoryTreeSchema, undefined, [categoryExample]),
                 ...createValidatorErrorResponse(),
                 ...createServerErrorResponse('查询分类树数据失败'),
             },
@@ -74,7 +76,7 @@ export const categoryRoutes = app
             summary: '分类面包屑查询',
             description: '通过一个父分类,查询出其祖先分类并组成一个一维分类列表',
             responses: {
-                ...createSuccessResponse(categoryListSchema),
+                ...createSuccessResponse(categoryListSchema, undefined, categoryListExample),
                 ...createValidatorErrorResponse(),
                 ...createServerErrorResponse('查询分类面包屑数据失败'),
             },

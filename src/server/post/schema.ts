@@ -1,8 +1,56 @@
 import { isNil } from 'lodash';
 import z from 'zod';
 
-import { categoryListSchema, categorySchema } from '../category/schema';
+import { categoryExample, categoryListSchema, categorySchema } from '../category/schema';
 import { tagListSchema } from '../tag/schema';
+
+export const postExample = {
+    id: 'post-001',
+    title: 'Next.js 14 新特性介绍',
+    thumb: 'https://example.com/thumb.jpg',
+    summary: '介绍 Next.js 14 的主要新特性和改进',
+    keywords: 'Next.js,React,Server Components',
+    description: '深入了解 Next.js 14 带来的变化',
+    slug: 'nextjs-14-new-features',
+    body: '# Next.js 14 新特性介绍\n\nNext.js 14 带来了许多令人兴奋的新特性...',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    updatedAt: '2024-01-01T00:00:00.000Z',
+    tags: [
+        {
+            id: 'tag-001',
+            text: 'React',
+        },
+    ],
+    categories: [
+        {
+            id: 'cat-001',
+            name: '技术',
+            slug: 'tech',
+            path: 'tech',
+            depth: 1,
+            numchild: 2,
+        },
+    ],
+    category: categoryExample,
+};
+
+export const postPaginateExample = {
+    items: [postExample],
+    meta: {
+        itemCount: 1,
+        totalItems: 10,
+        perPage: 10,
+        totalPages: 1,
+        currentPage: 1,
+        tags: '',
+        categories: [categoryExample],
+        category: categoryExample,
+    },
+};
+
+export const postPageNumbersExample = {
+    result: 5,
+};
 
 /**
  * 文章查询响应数据结构

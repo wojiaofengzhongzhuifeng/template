@@ -10,7 +10,11 @@ import {
     createValidatorErrorResponse,
 } from '../common/response';
 import { AuthProtectedMiddleware } from '../user/middlwares';
-import { generateCentralIdeaRequestSchema, generateCentralIdeaResponseSchema } from './schema';
+import {
+    generateCentralIdeaRequestSchema,
+    generateCentralIdeaResponseExample,
+    generateCentralIdeaResponseSchema,
+} from './schema';
 import { generateCentralIdea } from './service';
 
 type AuthSession = Awaited<ReturnType<typeof auth.api.getSession>>;
@@ -33,7 +37,11 @@ export const generateCentralIdeaRoutes = app.post(
         summary: '生成/美化中心思想',
         description: '根据故事概述生成中心思想，或美化已有的中心思想',
         responses: {
-            ...createSuccessResponse(generateCentralIdeaResponseSchema),
+            ...createSuccessResponse(
+                generateCentralIdeaResponseSchema,
+                undefined,
+                generateCentralIdeaResponseExample,
+            ),
             ...createUnauthorizedErrorResponse(),
             ...createValidatorErrorResponse(),
             ...createServerErrorResponse('生成失败'),

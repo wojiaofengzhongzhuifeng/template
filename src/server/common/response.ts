@@ -8,16 +8,22 @@ import { errorSchema, unifiedResponseSchema } from './schema';
  * 创建OpenAPI响应信息
  * @param description
  * @param schema
+ * @param example 示例数据
  */
 export const createResponse = <T extends ZodType, S extends number>(
     schema: T,
     status: S,
     description: string,
+    example?: any,
 ) => {
+    const content: { schema: any; example?: any } = { schema: resolver(schema) };
+    if (example !== undefined) {
+        content.example = example;
+    }
     return {
         [status]: {
             description,
-            content: { 'application/json': { schema: resolver(schema) } },
+            content: { 'application/json': content },
         },
     };
 };
@@ -26,30 +32,42 @@ export const createResponse = <T extends ZodType, S extends number>(
  * 创建统一格式的OpenAPI成功响应信息
  * @param description
  * @param schema
+ * @param example 示例数据
  */
 export const createUnifiedSuccessResponse = <T extends ZodType>(
     schema: T,
     description?: string,
+    example?: any,
 ) => {
-    return createResponse(unifiedResponseSchema(schema), 200, description ?? '请求成功');
+    return createResponse(unifiedResponseSchema(schema), 200, description ?? '请求成功', example);
 };
 
 /**
  * 创建OpenAPI成功响应信息（统一格式）
  * @param description
  * @param schema
+ * @param example 示例数据
  */
-export const createSuccessResponse = <T extends ZodType>(schema: T, description?: string) => {
-    return createUnifiedSuccessResponse(schema, description);
+export const createSuccessResponse = <T extends ZodType>(
+    schema: T,
+    description?: string,
+    example?: any,
+) => {
+    return createUnifiedSuccessResponse(schema, description, example);
 };
 
 /**
  * 创建OpenAPI 201 成功响应信息（统一格式）
  * @param description
  * @param schema
+ * @param example 示例数据
  */
-export const create201SuccessResponse = <T extends ZodType>(schema: T, description?: string) => {
-    return createResponse(unifiedResponseSchema(schema), 201, description ?? '创建成功');
+export const create201SuccessResponse = <T extends ZodType>(
+    schema: T,
+    description?: string,
+    example?: any,
+) => {
+    return createResponse(unifiedResponseSchema(schema), 201, description ?? '创建成功', example);
 };
 
 /**
