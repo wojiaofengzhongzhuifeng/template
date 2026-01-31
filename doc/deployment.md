@@ -281,12 +281,76 @@ pnpm typecheck    # TypeScript 类型检查
 
 ## 🌐 Docker 部署到服务器
 
-### 1. 准备服务器环境
+### 1. Dockerfile 配置
 
-确保服务器已安装：
+在项目根目录创建 `Dockerfile`：
 
-- Docker >= 20.0.0
-- Docker Compose >= 2.0.0
+```dockerfile
+# 构建阶段
+FROM node:20.0.0-alpine AS builder
+
+WORKDIR /app
+
+# 复制 package.json 和 pnpm-lock.yaml
+COPY package.json pnpm-lock.yaml .
+
+# 安装 pnpm
+RUN npm install -g pnpm
+
+# 安装项目依赖
+RUN pnpm install --frozen-lockfile
+
+# 复制源代码
+COPY .
+
+# 设置构建时环境变量
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+# 构建应用（使用 webpack）
+RUN pnpm run build
+
+# 生产阶段
+FROM node:20.0.0-alpine AS runner
+
+WORKDIR /app
+
+# 复制 package.json 和 pnpm-lock.yaml
+COPY package.json pnpm-lock.yaml .
+
+# 安装 pnpm
+RUN npm install -g pnpm
+
+# 只安装生产依赖
+RUN pnpm install --prod --frozen-lockfile
+
+# 从构建阶段复制构建产物
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/public ./public
+
+# 设置运行时环境变量
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+
+# 暴露端口
+EXPOSE 3000
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })" || exit 1
+
+# 启动应用
+CMD ["node", "server.js"]
+```
+
+**Dockerfile 说明**：
+
+- 多阶段构建：`builder` 阶段构建应用，`runner` 阶段只复制必要文件
+- 生产依赖：使用 `--prod` 标志减少安装包大小
+- 健康检查：30秒间隔检查应用状态
+- 环境变量：`NEXT_TELEMETRY_DISABLED=1` 禁用遥测
 
 ### 2. 上传项目文件
 
