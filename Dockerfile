@@ -6,11 +6,11 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# 配置淘宝 npm 镜像（必须在 corepack 之前配置）
+RUN npm config set registry https://registry.npmmirror.com
+
 # 安装 pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
-
-# 配置淘宝 npm 镜像
-RUN npm config set registry https://registry.npmmirror.com
 
 # 复制依赖文件
 COPY package.json pnpm-lock.yaml ./
@@ -22,6 +22,9 @@ RUN pnpm install --frozen-lockfile
 FROM docker.m.daocloud.io/library/node:20-alpine AS builder
 
 WORKDIR /app
+
+# 配置淘宝 npm 镜像
+RUN npm config set registry https://registry.npmmirror.com
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
