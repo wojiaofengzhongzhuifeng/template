@@ -8,22 +8,45 @@ export const createPromptRequestExample = {
     central_idea: '通过小兔子的冒险旅程，展现友谊互助和勇敢面对困难的美好品质',
 };
 
+export const storySceneSchema = z
+    .object({
+        text: z.string().meta({ description: '绘本文字内容' }),
+        img_text_prompt: z.string().meta({ description: 'AI 图像生成提示词' }),
+    })
+    .meta({ $id: 'StoryScene', description: '故事场景' });
+
 export const createPromptResponseExample = {
     success: true,
-    data: {
-        id: 'prompt-001',
-        prompts: [
-            {
-                sceneIndex: 1,
-                description: '阳光明媚的早晨，小兔子跳跳从家里出来，准备去森林探险',
-            },
-            {
-                sceneIndex: 2,
-                description: '跳跳在森林里遇到了小松鼠松松，他们成为了好朋友',
-            },
-        ],
+    scenes: [
+        {
+            text: '小猫在花园里找到了一篮子美味的食物。',
+            img_text_prompt:
+                "A small chubby white rabbit, fluffy soft fur, big sparkling round eyes with pink pupils, long floppy ears with pink inner, wearing a light blue knitted vest with a small heart button, sitting alone under a large oak tree with twisted branches, paws hugging knees, looking at distant animals playing with a shy and longing expression, in a sunny meadow filled with colorful wildflowers and butterflies, soft golden afternoon light filtering through leaves, warm and slightly melancholic atmosphere, medium shot, centered composition, cute cartoon animation style, clean outlines, bright flat colors, expressive characters, smooth gradients, Disney-Pixar inspired, children's picture book illustration, masterpiece, best quality, highly detailed, 8k",
+        },
+        {
+            text: '小猫看着篮子里的食物，想起了它的好朋友小狗。',
+            img_text_prompt:
+                "A small chubby white rabbit, fluffy soft fur, big sparkling round eyes with pink pupils, long floppy ears with pink inner, wearing a light blue knitted vest with a small heart button, holding a woven basket filled with fresh vegetables, looking at a small friendly brown puppy in the distance, in a sunny garden with blooming flowers, soft warm afternoon light, cute cartoon animation style, children's picture book illustration, masterpiece, best quality, highly detailed",
+        },
+    ],
+    sceneCount: 8,
+    generationTime: 52447,
+    metadata: {
+        child_age: 'infant',
+        child_age_label: '0-2岁婴幼儿',
+        illustration_style: 'crayon',
+        illustration_style_label: '蜡笔画风格',
+        themes: ['emotional_education'],
+        themes_label: '情感教育',
+        story_overview: '小猫分享食物',
+        central_idea: '学会分享',
+        model: 'glm-4-flash',
+        usage: {
+            prompt_tokens: 902,
+            completion_tokens: 991,
+            total_tokens: 1893,
+        },
     },
-    message: '创建成功',
 };
 
 export const createPromptRequestSchema = z
@@ -52,8 +75,29 @@ export const createPromptRequestSchema = z
 export const createPromptResponseSchema = z
     .object({
         success: z.boolean(),
-        data: z.any(),
-        message: z.string(),
+        scenes: z.array(storySceneSchema),
+        sceneCount: z.number(),
+        generationTime: z.number(),
+        metadata: z
+            .object({
+                child_age: z.string().nullable(),
+                child_age_label: z.string().nullable(),
+                illustration_style: z.string().nullable(),
+                illustration_style_label: z.string().nullable(),
+                themes: z.array(z.string()),
+                themes_label: z.string(),
+                story_overview: z.string(),
+                central_idea: z.string().nullable(),
+                model: z.string(),
+                usage: z
+                    .object({
+                        prompt_tokens: z.number(),
+                        completion_tokens: z.number(),
+                        total_tokens: z.number(),
+                    })
+                    .optional(),
+            })
+            .meta({ description: '元数据' }),
     })
     .meta({
         $id: 'CreatePromptResponse',
