@@ -50,14 +50,18 @@ export const categoryListExample = [
  * 分类列表查询请求数据结构
  */
 export const categoryListRequestParamsSchema = z.object({
-    parent: z.string().optional().meta({ description: '父分类ID' }),
+    parent: z.string().optional().meta({
+        description: '父分类ID，用于获取指定分类的子分类列表。不提供则获取所有顶级分类',
+    }),
 });
 
 /**
  * 分类面包屑查询请求数据结构
  */
 export const categoryBreadcrumbRequestParamsSchema = z.object({
-    latest: z.string().meta({ description: '最后一个起始分类ID' }),
+    latest: z.string().meta({
+        description: '最后一个起始分类ID，从该分类向上追溯其所有祖先分类，生成面包屑导航',
+    }),
 });
 
 const baseCategorySchema = z.object({

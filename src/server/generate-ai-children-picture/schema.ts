@@ -27,19 +27,34 @@ export const generateAiChildrenPictureResponseExample = {
 
 export const generateAiChildrenPictureSchema = z
     .object({
-        prompt: z.string().min(1).meta({ description: '图片描述' }),
+        prompt: z.string().min(1).meta({
+            description:
+                '图片描述，详细的画面描述文本，包含角色、场景、动作、风格等信息。建议使用英文描述以获得更好的效果，支持中文。描述越详细，生成效果越好',
+        }),
         model: z
             .enum(['glm-image', 'cogview-4-250304', 'cogview-4', 'cogview-3-flash'])
             .default('cogview-3-flash')
-            .meta({ description: 'AI 模型名称' }),
-        size: z.string().default('1280x1280').meta({ description: '图片尺寸，格式：宽x高' }),
-        quality: z
-            .enum(['hd', 'standard'])
-            .default('hd')
-            .meta({ description: '图片质量（hd=高清，standard=标准）' }),
-        sceneIndex: z.number().int().optional().meta({ description: '场景索引（用于 Mock 模式）' }),
+            .meta({
+                description:
+                    'AI 模型名称，选择使用的图像生成模型。可选值：glm-image（通用图像模型）、cogview-4-250304（CogView-4 最新版）、cogview-4（CogView-4 标准版）、cogview-3-flash（CogView-3 快速版，默认）',
+            }),
+        size: z.string().default('1280x1280').meta({
+            description:
+                '图片尺寸，格式为 宽x高。常用尺寸：1280x1280（正方形）、1920x1080（横版）、1080x1920（竖版），默认为 1280x1280',
+        }),
+        quality: z.enum(['hd', 'standard']).default('hd').meta({
+            description:
+                '图片质量，决定生成图片的精细度。可选值：hd（高清，生成更清晰的图片）、standard（标准，生成速度更快，默认）',
+        }),
+        sceneIndex: z.number().int().optional().meta({
+            description:
+                '场景索引，用于标识或追踪不同的图片生成请求，可用于 Mock 测试模式。可选字段',
+        }),
     })
-    .meta({ $id: 'GenerateAiChildrenPicture', description: '生成 AI 儿童绘本图片请求' });
+    .meta({
+        $id: 'GenerateAiChildrenPicture',
+        description: '生成 AI 儿童绘本图片请求，使用智谱 CogView 模型生成儿童绘本风格的插画',
+    });
 
 export const generateAiChildrenPictureResponseSchema = z
     .object({

@@ -24,7 +24,9 @@ export const tagListExample = [
  * 文章详情查询请求数据结构
  */
 export const tagItemRequestParamsSchema = z.object({
-    item: z.string().meta({ description: '标签ID' }),
+    item: z.string().meta({
+        description: '标签ID，要查询的标签的唯一标识符',
+    }),
 });
 
 /**

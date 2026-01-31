@@ -112,34 +112,55 @@ export const postPageNumbersSchema = z
  * 文章分页查询请求数据结构
  */
 export const postPaginateRequestQuerySchema = z.object({
-    page: z.coerce.number().optional().meta({ description: '页码' }),
-    limit: z.coerce.number().optional().meta({ description: '每页数量' }),
-    orderBy: z.enum(['asc', 'desc']).optional().meta({ description: '排序方式' }),
-    tag: z.string().optional().meta({ description: '标签过滤' }),
-    category: z.string().optional().meta({ description: '分类过滤' }),
+    page: z.coerce.number().optional().meta({
+        description: '页码，要查询的页码，从 1 开始。不提供则默认为第 1 页',
+    }),
+    limit: z.coerce.number().optional().meta({
+        description: '每页数量，每页显示的文章数量。不提供则使用默认值，通常为 10 或 20',
+    }),
+    orderBy: z.enum(['asc', 'desc']).optional().meta({
+        description:
+            '排序方式，文章列表的排序规则。可选值：asc（升序，从旧到新）、desc（降序，从新到旧，默认）',
+    }),
+    tag: z.string().optional().meta({
+        description: '标签过滤，根据标签筛选文章。可以传入标签ID或标签名称，不提供则不过滤',
+    }),
+    category: z.string().optional().meta({
+        description: '分类过滤，根据分类筛选文章。可以传入分类ID或分类slug，不提供则不过滤',
+    }),
 });
 
 /**
  * 文章页面总数查询请求数据结构
  */
 export const postPageNumbersRequestQuerySchema = z.object({
-    limit: z.coerce.number().optional().meta({ description: '每页数量' }),
-    tag: z.string().optional().meta({ description: '标签过滤' }),
-    category: z.string().optional().meta({ description: '分类过滤' }),
+    limit: z.coerce.number().optional().meta({
+        description: '每页数量，用于计算总页数。不提供则使用默认值',
+    }),
+    tag: z.string().optional().meta({
+        description: '标签过滤，根据标签筛选文章后计算总页数。可以传入标签ID或标签名称',
+    }),
+    category: z.string().optional().meta({
+        description: '分类过滤，根据分类筛选文章后计算总页数。可以传入分类ID或分类slug',
+    }),
 });
 
 /**
  * 文章详情查询请求数据结构
  */
 export const postDetailRequestParamsSchema = z.object({
-    item: z.string().meta({ description: '文章ID/slug' }),
+    item: z.string().meta({
+        description: '文章ID/slug，可以通过文章ID或slug查询文章详情',
+    }),
 });
 
 /**
  * 通过ID查询文章详情的请求数据结构
  */
 export const postDetailByIdRequestParamsSchema = z.object({
-    id: z.string().meta({ description: '文章ID' }),
+    id: z.string().meta({
+        description: '文章ID，文章的唯一标识符',
+    }),
 });
 /**
  * 通过slug查询文章详情的请求数据结构
@@ -148,7 +169,9 @@ export const postDetailBySlugRequestParamsSchema = z
     .object({
         slug: z.string(),
     })
-    .meta({ description: '文章slug' });
+    .meta({
+        description: '文章slug，文章的URL友好标识符，用于SEO和友好的URL访问',
+    });
 
 /**
  * 文章操作(建或更新文章)时的请求数据结构
@@ -163,7 +186,10 @@ export const getPostItemRequestSchema = (
             message: 'slug不得超过250个字符',
         })
         .optional()
-        .meta({ description: '文章slug' });
+        .meta({
+            description:
+                '文章slug，URL友好的标识符，用于SEO。只能包含小写字母、数字、连字符，必须唯一',
+        });
     if (!isNil(slugUniqueValidator)) {
         slug = slug.refine(slugUniqueValidator, {
             message: 'slug必须是唯一的,请重新设置',
@@ -179,37 +205,53 @@ export const getPostItemRequestSchema = (
                 .max(200, {
                     message: '标题不得超过200个字符',
                 })
-                .meta({ description: '文章标题' }),
+                .meta({
+                    description: '文章标题，文章的主标题，用于展示和SEO。字数限制1-200字',
+                }),
             body: z
                 .string()
                 .min(1, {
                     message: '标题不得少于1个字符',
                 })
-                .meta({ description: '文章内容' }),
+                .meta({
+                    description: '文章内容，文章的正文内容，支持Markdown格式',
+                }),
             summary: z
                 .string()
                 .max(300, {
                     message: '摘要不得超过300个字符',
                 })
                 .optional()
-                .meta({ description: '文章摘要' }),
+                .meta({
+                    description:
+                        '文章摘要，文章的简短摘要，用于列表展示和SEO。字数限制0-300字，可选',
+                }),
             keywords: z
                 .string()
                 .max(200, {
                     message: '描述不得超过200个字符',
                 })
                 .optional()
-                .meta({ description: '文章关键字' }),
+                .meta({
+                    description: '文章关键字，逗号分隔的关键词，用于SEO。字数限制0-200字，可选',
+                }),
             description: z
                 .string()
                 .max(300, {
                     message: '描述不得超过300个字符',
                 })
                 .optional()
-                .meta({ description: '文章描述' }),
+                .meta({
+                    description:
+                        '文章描述，用于SEO的描述信息，显示在搜索引擎结果中。字数限制0-300字，可选',
+                }),
             slug,
-            tags: tagListSchema.optional().meta({ description: '关联标签列表' }),
-            categoryId: z.string().optional().meta({ description: '关联分类ID' }),
+            tags: tagListSchema.optional().meta({
+                description: '关联标签列表，文章关联的标签数组。标签对象包含 id 和 text 字段，可选',
+            }),
+            categoryId: z.string().optional().meta({
+                description: '关联分类ID，文章所属的分类ID，可选',
+            }),
         })
         .strict();
 };

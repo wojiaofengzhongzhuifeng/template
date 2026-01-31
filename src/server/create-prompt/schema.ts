@@ -51,25 +51,44 @@ export const createPromptResponseExample = {
 
 export const createPromptRequestSchema = z
     .object({
-        child_age: z.enum(['infant', 'preschool', 'early_elementary']).nullable(),
+        child_age: z.enum(['infant', 'preschool', 'early_elementary']).nullable().meta({
+            description:
+                '儿童年龄段，用于调整故事语言的复杂度和内容适应性。可选值：infant（0-2岁婴幼儿）、preschool（3-6岁学龄前儿童）、early_elementary（6-8岁小学低年级）',
+        }),
         illustration_style: z
             .enum(['watercolor', 'crayon', 'cartoon', 'clay_3d', 'paper_cut'])
-            .nullable(),
-        themes: z.array(
-            z.enum([
-                'emotional_education',
-                'cognitive_learning',
-                'social_behavior',
-                'natural_science',
-                'fantasy_adventure',
-            ]),
-        ),
-        story_overview: z.string().min(1, '故事概述不能为空'),
-        central_idea: z.string().min(1, '中心思想不能为空'),
+            .nullable()
+            .meta({
+                description:
+                    '插画风格，决定生成图片的艺术表现形式。可选值：watercolor（水彩画风格）、crayon（蜡笔画风格）、cartoon（卡通动画风格）、clay_3d（3D黏土风格）、paper_cut（剪纸拼贴风格）',
+            }),
+        themes: z
+            .array(
+                z.enum([
+                    'emotional_education',
+                    'cognitive_learning',
+                    'social_behavior',
+                    'natural_science',
+                    'fantasy_adventure',
+                ]),
+            )
+            .meta({
+                description:
+                    '绘本主题，可多选，影响故事的教育方向。可选值：emotional_education（情感教育）、cognitive_learning（认知学习）、social_behavior（社交行为）、natural_science（自然科学）、fantasy_adventure（奇幻冒险）',
+            }),
+        story_overview: z.string().min(1, '故事概述不能为空').meta({
+            description:
+                '故事概述，详细描述故事的主要情节、角色设定和故事走向。建议包含主角、遇到的问题、解决过程等要素，字数建议50-200字',
+        }),
+        central_idea: z.string().min(1, '中心思想不能为空').meta({
+            description:
+                '中心思想，故事想要传达的核心价值观、人生哲理或教育意义。例如：勇气、友谊、分享、坚持等主题，字数建议10-50字',
+        }),
     })
     .meta({
         $id: 'CreatePromptRequest',
-        description: '创建绘本请求',
+        description:
+            '创建绘本请求，根据用户提供的信息生成完整的儿童绘本分镜脚本，包含绘本文字和AI图像生成提示词',
     });
 
 export const createPromptResponseSchema = z

@@ -90,12 +90,16 @@ export const authSignoutResponseSchema = z.object({
 
 // 用户详情请求参数 schema
 export const userDetailRequestParamsSchema = z.object({
-    id: z.string().min(1, 'ID不能为空'),
+    id: z.string().min(1, 'ID不能为空').meta({
+        description: '用户ID，要查询的用户唯一标识符',
+    }),
 });
 
 // 发送邮箱 OTP 请求 schema
 export const sendEmailVerificationOTPRequestSchema = z.object({
-    email: z.email(),
+    email: z.email().meta({
+        description: '邮箱地址，用于接收邮箱验证码的有效邮箱地址',
+    }),
 });
 
 // 发送忘记密码 OTP 请求 schema

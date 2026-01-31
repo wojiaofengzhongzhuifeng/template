@@ -32,7 +32,7 @@ export const countListExample = [
  * Count ID 请求参数
  */
 export const countIdParamsSchema = z.object({
-    id: z.string().meta({ description: 'Count ID' }),
+    id: z.string().meta({ description: 'Count ID，计数器的唯一标识符' }),
 });
 
 /**
@@ -40,20 +40,29 @@ export const countIdParamsSchema = z.object({
  */
 export const countCreateSchema = z
     .object({
-        number: z.number().int().default(0).meta({ description: '计数值' }),
-        isPublic: z.boolean().default(false).meta({ description: '是否公开' }),
+        number: z.number().int().default(0).meta({
+            description: '计数值，计数器的初始值，默认为 0。必须是整数',
+        }),
+        isPublic: z.boolean().default(false).meta({
+            description:
+                '是否公开，决定其他用户是否可以查看该计数器。true=公开，false=私有，默认为 false',
+        }),
     })
-    .meta({ $id: 'CountCreate', description: '创建 Count 请求数据' });
+    .meta({ $id: 'CountCreate', description: '创建计数器请求数据' });
 
 /**
  * Count 更新请求数据结构
  */
 export const countUpdateSchema = z
     .object({
-        number: z.number().int().optional().meta({ description: '计数值' }),
-        isPublic: z.boolean().optional().meta({ description: '是否公开' }),
+        number: z.number().int().optional().meta({
+            description: '计数值，要更新为的新数值。必须是整数，可选字段',
+        }),
+        isPublic: z.boolean().optional().meta({
+            description: '是否公开，更新计数器的公开状态。true=公开，false=私有，可选字段',
+        }),
     })
-    .meta({ $id: 'CountUpdate', description: '更新 Count 请求数据' });
+    .meta({ $id: 'CountUpdate', description: '更新计数器请求数据' });
 
 /**
  * Count 响应数据结构

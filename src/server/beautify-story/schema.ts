@@ -23,11 +23,23 @@ export const beautifyStoryResponseExample = {
 
 export const beautifyStoryRequestSchema = z
     .object({
-        storyOverview: z.string().min(1, '故事概述不能为空'),
-        childAge: z.enum(['infant', 'preschool', 'early_elementary']).optional(),
-        themes: z.array(z.string()).optional(),
+        storyOverview: z.string().min(1, '故事概述不能为空').meta({
+            description:
+                '故事概述，需要美化的原始故事文本。可以是简单的故事大纲、片段或完整的草稿内容',
+        }),
+        childAge: z.enum(['infant', 'preschool', 'early_elementary']).optional().meta({
+            description:
+                '儿童年龄段，用于调整美化后故事的语言难度和表现方式。可选值：infant（0-2岁婴幼儿）、preschool（3-6岁学龄前儿童）、early_elementary（6-8岁小学低年级）',
+        }),
+        themes: z.array(z.string()).optional().meta({
+            description:
+                '故事主题，用于引导美化方向。可选值：emotional_education（情感教育）、cognitive_learning（认知学习）、social_behavior（社交行为）、natural_science（自然科学）、fantasy_adventure（奇幻冒险）',
+        }),
     })
-    .meta({ $id: 'BeautifyStoryRequest', description: '美化故事概述请求' });
+    .meta({
+        $id: 'BeautifyStoryRequest',
+        description: '美化故事概述请求，将简单的故事概述优化为生动有趣、适合儿童阅读的绘本故事文本',
+    });
 
 export const beautifyStoryResponseSchema = z
     .object({
