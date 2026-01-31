@@ -1,5 +1,5 @@
 # 第一阶段：安装依赖
-FROM node:20-alpine AS deps
+FROM docker.m.daocloud.io/library/node:20-alpine AS deps
 
 # 使用阿里云 Alpine 镜像源
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
@@ -19,7 +19,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
 # 第二阶段：构建应用
-FROM node:20-alpine AS builder
+FROM docker.m.daocloud.io/library/node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -38,7 +38,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm build
 
 # 第三阶段：运行应用
-FROM node:20-alpine AS runner
+FROM docker.m.daocloud.io/library/node:20-alpine AS runner
 
 WORKDIR /app
 
