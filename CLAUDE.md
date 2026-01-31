@@ -5,6 +5,7 @@
 ## 项目概述
 
 这是一个 **Next.js + Hono** 全栈应用，技术栈包括：
+
 - **前端**: Next.js 16.1.1 + React 19，使用 App Router
 - **后端**: Hono 4.11.1 提供 API 层，集成 OpenAPI/Swagger 文档
 - **数据库**: PostgreSQL + Prisma 7.2.0 ORM
@@ -15,6 +16,7 @@
 ## 常用开发命令
 
 ### 开发与构建
+
 ```bash
 pnpm dev          # 启动开发服务器（清理 .next，使用 webpack）
 pnpm build        # 构建生产版本（standalone 输出）
@@ -22,6 +24,7 @@ pnpm start        # 启动生产服务器
 ```
 
 ### 数据库操作
+
 ```bash
 pnpm dbg          # 生成 Prisma 客户端（开发环境）
 pnpm dbp          # 推送 schema 变更到数据库
@@ -35,6 +38,7 @@ pnpm dball        # 依次运行迁移 + 生成客户端 + 种子数据
 ```
 
 ### 代码质量
+
 ```bash
 pnpm lint         # 运行 ESLint 和 Stylelint（自动修复）
 pnpm lint:es      # 仅运行 ESLint
@@ -42,6 +46,7 @@ pnpm lint:style   # 仅运行 Stylelint
 ```
 
 ### UI 组件
+
 ```bash
 pnpm addsc        # 添加新的 shadcn/ui 组件
 ```
@@ -76,6 +81,7 @@ src/
 ### 后端 API 结构
 
 `src/server/` 中的每个领域文件夹遵循以下模式：
+
 - `schema.ts` - 带有 OpenAPI 元数据的 Zod 验证 schema
 - `routes.ts` - Hono 路由定义
 - `service.ts` - 业务逻辑层
@@ -87,6 +93,7 @@ src/
 ### API 文档
 
 API 自动生成 OpenAPI 文档：
+
 - Swagger UI: `http://localhost:3000/api/swagger`
 - Scalar 文档: `http://localhost:3000/api/docs`
 - OpenAPI JSON: `http://localhost:3000/api/data`
@@ -94,6 +101,7 @@ API 自动生成 OpenAPI 文档：
 ### 数据库 Schema 组织
 
 **重要**: Prisma 模型被拆分为独立文件，存放在 `src/database/schema/models/`：
+
 - `user.prisma` - User, Session, Account, Verification 模型
 - `post.prisma` - 博客文章模型
 - `category.prisma` - 分类模型
@@ -103,6 +111,7 @@ API 自动生成 OpenAPI 文档：
 主 schema 文件位于项目根目录的 `prisma/schema.prisma`，它引用这些文件并将客户端生成到 `src/database/generated/`。
 
 添加新模型时：
+
 1. 在 `src/database/schema/models/` 创建新的 `.prisma` 文件
 2. 运行 `pnpm dbmc` 创建迁移
 3. 运行 `pnpm dbm` 应用迁移
@@ -111,6 +120,7 @@ API 自动生成 OpenAPI 文档：
 ### 前后端通信
 
 API 层使用 Hono 的类型安全客户端：
+
 1. 后端路由定义在 `src/server/*/routes.ts`
 2. 路由在 `src/server/main.ts` 中注册
 3. 前端在 `src/api/` 中使用 Hono 的 `hc()` 工具创建类型安全客户端
@@ -120,25 +130,31 @@ API 层使用 Hono 的类型安全客户端：
 ## 核心模式与约定
 
 ### 1. 模块化路由设计
+
 每个领域（user, post, category, tag, count）都是自包含的模块，拥有自己的路由、schema、服务和类型。
 
 ### 2. Zod Schema 注册表
+
 项目在模块加载时清除 Zod 注册表以修复 Next.js HMR 问题。这在 `src/server/main.ts` 中通过导入 `./common/zod-registry` 处理。
 
 ### 3. OpenAPI 集成
+
 所有 API 端点使用 `hono-openapi` 自动生成文档。Zod schema 包含 OpenAPI 元数据以提供完整的 API 文档。
 
 ### 4. 认证流程
+
 - BetterAuth 处理用户会话
 - `src/server/user/` 中的自定义中间件用于路由保护
 - JWT 风格的会话管理，使用 Redis 缓存
 
 ### 5. 数据库模式
+
 - 基于用户的数据所有权（实体通过 `userId` 属于用户）
 - 自定义 Prisma 扩展用于嵌套操作和截断
 - 适当的软删除模式
 
 ### 6. 错误处理
+
 - 结构化的错误响应，格式一致
 - Zod 验证配合自定义错误处理器
 - 正确的 HTTP 状态码
@@ -146,23 +162,29 @@ API 层使用 Hono 的类型安全客户端：
 ### 7. HTTP 请求与状态管理
 
 **HTTP 客户端**：
+
 - **Axios** (`src/config/request.ts`)：配置了请求/响应拦截器的 axios 实例
-  - 自动携带 session cookie（BetterAuth 认证）
-  - GET 请求自动添加时间戳防缓存
-  - 统一错误处理（401/403/404/500 等）
-  - 预留了 token 认证扩展点
+    - 自动携带 session cookie（BetterAuth 认证）
+    - GET 请求自动添加时间戳防缓存
+    - 统一错误处理（401/403/404/500 等）
+    - 预留了 token 认证扩展点
 - **Hono 类型安全客户端** (`src/libs/hono.ts`)：用于服务端组件直接调用后端
 
 **数据获取模式**：
+
 ```typescript
 // 客户端组件：使用 axios + useRequest hook
 import { http } from '@/config/request';
 import { useRequest } from '@/hooks/use-request';
 
 const { data, loading, error, run } = useRequest(fetchFunction, {
-    manual: false,  // false = 自动执行
-    onSuccess: (data) => { /* 成功回调 */ },
-    onError: (error) => { /* 失败回调 */ },
+    manual: false, // false = 自动执行
+    onSuccess: (data) => {
+        /* 成功回调 */
+    },
+    onError: (error) => {
+        /* 失败回调 */
+    },
 });
 
 // 服务端组件：使用 Hono 客户端（内部调用，无 HTTP 开销）
@@ -171,12 +193,15 @@ const data = await countApi.publicList();
 ```
 
 **Zustand Store**：
+
 - 使用 `src/libs/store.ts` 中的工具函数创建
 - 内置 immer、devtools、persist、subscribeWithSelector 中间件
 - 异步状态管理通常使用 `data | null` + 独立的 loading/error 状态
 
 ### 8. 环境变量
+
 必需的环境变量：
+
 - `DATABASE_URL` - PostgreSQL 连接字符串
 - `NEXT_PUBLIC_BASE_URL` - 应用基础 URL
 - `NEXT_PUBLIC_API_PATH` - API 路径前缀
@@ -188,20 +213,20 @@ const data = await countApi.publicList();
 ### 添加新功能
 
 1. **后端**：
-   - 在 `src/server/` 创建新文件夹（如 `src/server/myfeature/`）
-   - 添加 `schema.ts`, `routes.ts`, `service.ts`, `type.ts`, `constants.ts`
-   - 在 `src/server/main.ts` 注册路由
+    - 在 `src/server/` 创建新文件夹（如 `src/server/myfeature/`）
+    - 添加 `schema.ts`, `routes.ts`, `service.ts`, `type.ts`, `constants.ts`
+    - 在 `src/server/main.ts` 注册路由
 
 2. **数据库**（如需要）：
-   - 在 `src/database/schema/models/myfeature.prisma` 创建模型文件
-   - 运行 `pnpm dbmc` → `pnpm dbm` → `pnpm dbg`
+    - 在 `src/database/schema/models/myfeature.prisma` 创建模型文件
+    - 运行 `pnpm dbmc` → `pnpm dbm` → `pnpm dbg`
 
 3. **前端**：
-   - 在 `src/api/myfeature.ts` 创建 Hono API 客户端（用于服务端组件）
-   - 在 `src/app/(pages)/(myfeature)/api/` 创建 axios 请求函数（用于客户端组件）
-   - 在 `src/app/(pages)/(myfeature)/hook/` 创建数据获取 hook
-   - 在 `src/app/(pages)/(myfeature)/store/` 创建 Zustand store（如需要）
-   - 在 `src/app/(pages)/myfeature/` 添加页面
+    - 在 `src/api/myfeature.ts` 创建 Hono API 客户端（用于服务端组件）
+    - 在 `src/app/(pages)/(myfeature)/api/` 创建 axios 请求函数（用于客户端组件）
+    - 在 `src/app/(pages)/(myfeature)/hook/` 创建数据获取 hook
+    - 在 `src/app/(pages)/(myfeature)/store/` 创建 Zustand store（如需要）
+    - 在 `src/app/(pages)/myfeature/` 添加页面
 
 ### 代码规范
 
@@ -210,6 +235,7 @@ const data = await countApi.publicList();
 - 使用 TypeScript 严格模式（已启用）
 - 客户端组件使用 `'use client'` 指令标记
 - 使用 Tailwind CSS v4 的 `@tailwind` 指令
+- 使用 react 时， 经常对同一个功能的useState 与 useEffect 封装为一个 自定义 hooks
 
 ## 重要说明
 
